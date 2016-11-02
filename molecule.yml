@@ -1,0 +1,37 @@
+---
+driver:
+  name: docker
+
+docker:
+  containers:
+      - name: ansible-docker-jessie
+        image: debian
+        image_version: jessie
+        ansible_groups:
+          - test
+      - name: ansible-docker-xenial
+        image: ubuntu
+        image_version: xenial
+        ansible_groups:
+          - test
+      - name: ansible-docker-centos7
+        image: centos
+        image_version: 7
+        ansible_groups:
+          - test
+      - name: ansible-docker-arch
+        image: pritunl/archlinux
+        image_version: latest
+        dockerfile: docker/arch.dockerfile
+        command: /bin/bash
+        ansible_groups:
+          - test
+
+ansible:
+  requirements_file: dependencies.yml
+  group_vars:
+    test:
+      - docker_service_manage: no
+
+verifier:
+  name: testinfra

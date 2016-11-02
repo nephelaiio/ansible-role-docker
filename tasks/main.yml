@@ -1,0 +1,82 @@
+---
+# Include variable definitions
+- name: include variable overrides
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "vars/{{ ansible_distribution }}.yml"
+    - "vars/{{ ansible_os_family }}.yml"
+  tags:
+    - docker
+
+# Remove incompatible packages
+- name: remove incompatible packages
+  package: >
+    name="{{ docker_remove_packages }}"
+    state=absent
+  when: 
+    - docker_remove_packages is defined
+  become: yes
+  tags:
+    - docker
+
+# Install docker repository
+- name: install docker apt repository
+  apt_repository: >
+    repo="{{ docker_repo_url }}"
+    state=present
+    filename=docker
+  when: ansible_os_family == "Debian"
+  become: yes
+  tags:
+    - docker
+
+# Install docker repository key
+- name: install docker apt key
+  apt_key: >
+    keyserver="{{ docker_repo_keyserver }}"
+    state=present
+    id="{{ docker_repo_id }}"
+  when: ansible_os_family == "Debian"
+  become: yes
+  tags:
+    - docker
+
+# Install docker repository
+- name: install docker yum repository
+  yum_repository: >
+    baseurl="{{ docker_repo_url }}"
+    name=docker
+    description="Docker Repository"
+    gpgcheck=yes
+    gpgkey="{{ docker_repo_gpgkey }}"
+  when: ansible_os_family == "RedHat"
+  become: yes
+  tags:
+    - docker
+
+# Install packages
+- name: install docker packages
+  package: >
+    name="{{ docker_packages }}"
+    state="{{ docker_packages_state }}"
+  become: yes
+  tags:
+    - docker
+  notify:
+    - restart docker services
+
+# Manage service
+- name: manage docker services
+  service: >
+    name="{{ docker_service_name }}"
+    state="{{ docker_service_status }}"
+  become: yes
+  when:
+    - docker_service_name is defined
+    - docker_service_manage == "yes"
+  tags:
+    - docker
+    - docker_service
+  notify:
+    - restart docker services

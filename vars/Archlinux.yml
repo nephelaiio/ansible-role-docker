@@ -1,0 +1,4 @@
+---
+# Variable overrides and definitions for Arch and derivatives
+docker_packages:
+  - docker
