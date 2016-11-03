@@ -14,9 +14,18 @@
   package: >
     name="{{ docker_remove_packages }}"
     state=absent
-  when: 
+  when:
     - docker_remove_packages is defined
   become: yes
+  tags:
+    - docker
+
+# Install apt helper packages
+- name: install helper packages
+  package: >
+    name="{{ docker_packages_helpers }}"
+    state=present
+  when: ansible_os_family == "Debian"
   tags:
     - docker
 
@@ -36,7 +45,7 @@
   apt_key: >
     keyserver="{{ docker_repo_keyserver }}"
     state=present
-    id="{{ docker_repo_id }}"
+    id="{{ docker_repo_key_id }}"
   when: ansible_os_family == "Debian"
   become: yes
   tags:
@@ -54,12 +63,28 @@
   become: yes
   tags:
     - docker
+  notify:
+    - apt update
 
 # Install packages
 - name: install docker packages
   package: >
     name="{{ docker_packages }}"
     state="{{ docker_packages_state }}"
+  when: ansible_os_family != "Debian"
+  become: yes
+  tags:
+    - docker
+  notify:
+    - restart docker services
+
+# Install packages
+- name: install docker apt packages
+  package: >
+    name="{{ docker_packages }}"
+    state="{{ docker_packages_state }}"
+    allow_unauthenticated=yes
+  when: ansible_os_family == "Debian"
   become: yes
   tags:
     - docker
@@ -80,3 +105,12 @@
     - docker_service
   notify:
     - restart docker services
+
+# Manage users
+- name: manage docker users
+  user: >
+    append=yes
+    groups="{{ docker_group }}"
+    name="{{ item }}"
+  become: yes
+  with_items: "{{ docker_users }}"

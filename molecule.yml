@@ -8,29 +8,33 @@ docker:
         image: debian
         image_version: jessie
         ansible_groups:
-          - test
+          - default
       - name: ansible-docker-xenial
         image: ubuntu
         image_version: xenial
         ansible_groups:
-          - test
+          - default
       - name: ansible-docker-centos7
         image: centos
         image_version: 7
         ansible_groups:
-          - test
+          - default
       - name: ansible-docker-arch
         image: pritunl/archlinux
         image_version: latest
         dockerfile: docker/arch.dockerfile
         command: /bin/bash
         ansible_groups:
-          - test
+          - arch
 
 ansible:
-  requirements_file: dependencies.yml
+  #requirements_file: dependencies.yml
   group_vars:
-    test:
+    default:
+      - docker_service_manage: no
+      - docker_packages:
+        - docker-engine
+    arch:
       - docker_service_manage: no
 
 verifier:

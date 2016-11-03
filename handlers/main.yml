@@ -6,3 +6,8 @@
     state=restarted
   become: yes
   when: docker_service_manage == "yes"
+
+- name: apt update
+  command: apt update
+  become: yes
+  when: ansible_os_family == "Debian"

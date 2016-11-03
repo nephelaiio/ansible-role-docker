@@ -23,5 +23,4 @@ galaxy_info:
   galaxy_tags:
     - docker
 
-dependencies:
-  - { role: willshersystems.apt, when: ansible_os_family == "Debian" }
+dependencies: []
