@@ -25,6 +25,7 @@
   package: >
     name="{{ docker_packages_helpers }}"
     state=present
+  become: yes
   when: ansible_os_family == "Debian"
   tags:
     - docker
