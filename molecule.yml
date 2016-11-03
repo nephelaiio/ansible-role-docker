@@ -8,20 +8,20 @@ docker:
         image: debian
         image_version: jessie
         ansible_groups:
-          - test
           - custom_packages
+          - test
       - name: ansible-docker-xenial
         image: ubuntu
         image_version: xenial
         ansible_groups:
-          - test
           - custom_packages
+          - test
       - name: ansible-docker-centos7
         image: centos
         image_version: 7
         ansible_groups:
-          - test
           - custom_packages
+          - test
       - name: ansible-docker-arch
         image: pritunl/archlinux
         image_version: latest
