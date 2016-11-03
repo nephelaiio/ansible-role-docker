@@ -3,12 +3,7 @@ nephelaiio.docker
 
 [![Build Status](https://travis-ci.org/nephelaiio/ansible-role-docker.svg?branch=master)](https://travis-ci.org/nephelaiio/ansible-role-docker)
 
-An [ansible role](https://galaxy.ansible.com/nephelaiio/docker) to install and configure docker
-
-Requirements
-------------
-
-Please make sure your environment has [docker](https://www.docker.com) installed in order to run role validation tests. Additional python dependencies are listed in the [requirements file](/requirements.txt)
+An [ansible role](https://galaxy.ansible.com/nephelaiio/docker) to install and configure [Docker](https://www.docker.com)
 
 Role Variables
 --------------
@@ -23,15 +18,15 @@ By default this role does not depend on any external roles. If any such dependen
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: servers
       roles:
-         - { role: docker docker_packages: docker }
+         - { role: docker, docker_packages_state: latest }
 
 
 Testing
 -------
+
+Please make sure your environment has [docker](https://www.docker.com) installed in order to run role validation tests. Additional python dependencies are listed in the [requirements file](/requirements.txt)
 
 Role is tested against the following distributions (docker images):
   * Ubuntu Xenial
