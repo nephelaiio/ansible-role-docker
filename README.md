@@ -18,9 +18,9 @@ By default this role does not depend on any external roles. If any such dependen
 Example Playbook
 ----------------
 
-    - hosts: servers
-      roles:
-         - { role: docker, docker_packages_state: latest }
+- hosts: servers
+  roles:
+     - { role: docker, docker_packages_state: latest }
 
 
 Testing
