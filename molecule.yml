@@ -9,16 +9,19 @@ docker:
         image_version: jessie
         ansible_groups:
           - test
+          - custom_packages
       - name: ansible-docker-xenial
         image: ubuntu
         image_version: xenial
         ansible_groups:
           - test
+          - custom_packages
       - name: ansible-docker-centos7
         image: centos
         image_version: 7
         ansible_groups:
           - test
+          - custom_packages
       - name: ansible-docker-arch
         image: pritunl/archlinux
         image_version: latest
@@ -30,13 +33,9 @@ docker:
 ansible:
   #requirements_file: dependencies.yml
   group_vars:
-    default:
+    custom_packages:
       - docker_service_manage: no
-  host_vars:
-    ansible-docker-jessie:
-      - docker_packages: docker-engine
-    ansible-docker-xenial:
-      - docker_packages: docker-engine
+        docker_packages: docker-engine
 
 verifier:
   name: testinfra
