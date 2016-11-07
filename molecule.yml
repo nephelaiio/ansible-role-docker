@@ -27,5 +27,11 @@ docker:
         ansible_groups:
           - test
 
+molecule:
+  ignore_paths:
+    - .git
+    - .ropeproject
+    - .molecule
+
 verifier:
   name: testinfra
