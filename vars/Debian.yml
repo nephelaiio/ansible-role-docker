@@ -10,3 +10,4 @@ docker_packages:
 docker_packages_helpers:
   - apt-transport-https
   - ca-certificates
+  - python-docker

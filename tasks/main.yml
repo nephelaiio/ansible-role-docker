@@ -26,7 +26,6 @@
     name="{{ docker_packages_helpers }}"
     state=present
   become: yes
-  when: ansible_os_family == "Debian"
   tags:
     - docker
 
@@ -80,7 +79,7 @@
     - restart docker services
 
 # Install packages
-- name: install docker apt packages
+- name: install docker packages
   package: >
     name="{{ docker_packages }}"
     state="{{ docker_packages_state }}"
