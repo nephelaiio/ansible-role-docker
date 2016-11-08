@@ -21,10 +21,21 @@
     - docker
 
 # Install apt helper packages
-- name: install helper packages
+- name: install apt helper packages
   package: >
     name="{{ docker_packages_helpers }}"
-    state=present
+    state="{{ docker_packages_state }}"
+  when: ansible_os_family == "Debian"
+  become: yes
+  tags:
+    - docker
+
+# Install docker-py
+- name: install docker-py
+  pip: >
+    name="{{ docker_pip_helpers }}"
+    state="{{ docker_packages_state }}"
+  when: docker_pip_helpers != []
   become: yes
   tags:
     - docker

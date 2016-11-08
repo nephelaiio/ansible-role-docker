@@ -4,6 +4,8 @@ docker_packages: docker-engine
 
 docker_packages_state: present
 
+docker_pip_helpers: docker-py
+
 docker_service_manage: yes
 
 docker_service_name: docker

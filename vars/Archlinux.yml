@@ -2,6 +2,6 @@
 # Variable overrides and definitions for Arch and derivatives
 docker_packages:
   - docker
-docker_packages_helpers:
   - python-docker-py
   - python2-docker-py
+docker_pip_helpers: []

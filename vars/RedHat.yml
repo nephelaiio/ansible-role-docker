@@ -4,5 +4,3 @@ docker_repo_url: "https://yum.dockerproject.org/repo/main/centos/{{ ansible_dist
 docker_repo_gpgkey: https://yum.dockerproject.org/gpg
 docker_packages:
   - docker-engine
-docker_packages_helpers:
-  - docker-python

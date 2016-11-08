@@ -23,4 +23,5 @@ galaxy_info:
   galaxy_tags:
     - docker
 
-dependencies: []
+dependencies:
+  - { role: nephelaiio.pip }
