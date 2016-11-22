@@ -118,6 +118,7 @@
   template:
     src: "{{ docker_configuration_template }}"
     dest: "{{ docker_configuration_file }}"
+  become: yes
   notify:
     - restart docker services
 
