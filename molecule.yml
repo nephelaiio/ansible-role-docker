@@ -40,8 +40,9 @@ molecule:
     - .ropeproject
     - .molecule
 
-ansible:
+dependency:
     requirements_file: dependencies.yml
+    name: galaxy
 
 verifier:
   name: testinfra
