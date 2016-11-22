@@ -2,7 +2,7 @@
 # handlers file for docker
 - name: restart docker services
   service:
-    name: docker_service_name
+    name: "{{ docker_service_name }}"
     state: restarted
   become: yes
   when: docker_service_state != "stopped"
