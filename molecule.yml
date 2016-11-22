@@ -7,23 +7,30 @@ docker:
       - name: ansible-docker-jessie
         image: debian
         image_version: jessie
+        privileged: True
         ansible_groups:
           - test
       - name: ansible-docker-xenial
         image: ubuntu
         image_version: xenial
+        privileged: True
         ansible_groups:
           - test
       - name: ansible-docker-centos7
         image: centos
         image_version: 7
+        dockerfile: docker/centos7.dockerfile
+        privileged: True
         ansible_groups:
           - test
       - name: ansible-docker-arch
-        image: pritunl/archlinux
+        image: codekoala/arch
         image_version: latest
+        volume_mounts:
+            - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
         dockerfile: docker/arch.dockerfile
-        command: /bin/bash
+        privileged: True
+        command: /usr/bin/init
         ansible_groups:
           - test
 

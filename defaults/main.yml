@@ -6,11 +6,15 @@ docker_packages_state: present
 
 docker_pip_helpers: docker-py
 
-docker_service_manage: yes
+docker_configuration_template: mountflags.conf.j2
+
+docker_configuration_file: /etc/systemd/system/docker.service.d/mountflags.conf
+
+docker_configuration_path: "{{ docker_configuration_file | dirname }}"
 
 docker_service_name: docker
 
-docker_service_status: started
+docker_service_state: started
 
 docker_group: docker
 

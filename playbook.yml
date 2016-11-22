@@ -12,5 +12,4 @@
               state=installed
       when: ansible_os_family == 'Debian'
   roles:
-    - { role: docker, docker_packages: docker-engine, when: ansible_os_family != 'Archlinux' }
-    - { role: docker, when: ansible_os_family == 'Archlinux' }
+    - { role: docker, docker_service_state: stopped }
