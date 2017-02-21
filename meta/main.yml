@@ -24,4 +24,4 @@ galaxy_info:
     - docker
 
 dependencies:
-  - { role: nephelaiio.pip }
+  - role: nephelaiio.pip
