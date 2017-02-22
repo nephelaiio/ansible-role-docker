@@ -14,7 +14,7 @@
           - which
           - wget
         state: installed
-      when: ansible_os_family != 'Debian'
+      when: ansible_os_family == 'RedHat'
     - name: "installing testing packages"
       package:
         name: wget
