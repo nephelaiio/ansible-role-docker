@@ -1,9 +1,18 @@
 ---
 - hosts: all
   pre_tasks:
+    - name: "updating arch keyring"
+      package:
+        name: archlinux-keyring
+        state: latest
+      when: ansible_os_family == 'Archlinux'
+      tags:
+        - skip_ansible_lint
     - name: "installing testing packages"
       package:
-        name: which,wget
+        name:
+          - which
+          - wget
         state: installed
       when: ansible_os_family != 'Debian'
     - name: "installing testing packages"
@@ -12,4 +21,5 @@
         state: installed
       when: ansible_os_family == 'Debian'
   roles:
-    - { role: docker, docker_service_state: stopped }
+    - role: docker
+      docker_service_state: stopped

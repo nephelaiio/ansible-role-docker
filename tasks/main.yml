@@ -132,6 +132,15 @@
     - docker
     - docker_service
 
+# Manage groups
+- name: manage docker groups
+  group:
+    name: "{{ docker_group }}"
+  become: yes
+  tags:
+    - docker
+    - docker_service
+
 # Manage users
 - name: manage docker users
   user:
@@ -140,3 +149,6 @@
     name: "{{ item }}"
   become: yes
   with_items: "{{ docker_users }}"
+  tags:
+    - docker
+    - docker_service
