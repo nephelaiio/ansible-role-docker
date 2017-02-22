@@ -82,8 +82,21 @@
   package:
     name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
-  when: ansible_os_family != "Debian"
+  when: ansible_os_family == "RedHat"
   become: yes
+  tags:
+    - docker
+  notify:
+    - restart docker services
+
+# Install packages
+- name: install docker packages
+  package:
+    name: "{{ docker_packages }}"
+    state: "{{ docker_packages_state }}"
+  when: ansible_os_family == "Archlinux"
+  become: yes
+  changed_when: false
   tags:
     - docker
   notify:
