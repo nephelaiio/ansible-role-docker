@@ -141,6 +141,7 @@
     name: "{{ docker_service_name }}"
     state: "{{ docker_service_state }}"
   become: yes
+  changed_when: false
   tags:
     - docker
     - docker_service
