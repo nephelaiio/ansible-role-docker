@@ -25,7 +25,6 @@ docker:
       ansible_groups:
         - test
     - name: ansible-docker-arch
-      image: codekoala/arch
       image_version: latest
       volume_mounts:
         - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
