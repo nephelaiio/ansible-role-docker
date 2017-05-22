@@ -31,7 +31,6 @@ docker:
         - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
       dockerfile: docker/arch.dockerfile
       privileged: True
-      command: /usr/bin/init
       ansible_groups:
         - test
 
