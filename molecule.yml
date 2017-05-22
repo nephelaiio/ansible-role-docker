@@ -26,6 +26,7 @@ docker:
         - test
     - name: ansible-docker-arch
       image_version: latest
+      image: archlinux
       volume_mounts:
         - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
       dockerfile: docker/arch.dockerfile
