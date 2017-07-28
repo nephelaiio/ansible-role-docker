@@ -7,7 +7,6 @@ services:
   - docker
 
 install:
-  - pip install molecule
   - pip install -r requirements.txt
 
 script:
