@@ -18,4 +18,4 @@ RUN locale-gen
 ENV container docker
 
 VOLUME ["/sys/fs/cgroup"]
-CMD ["usr/bin/systemd/systemd"]
+CMD ["/usr/bin/systemd/systemd"]
