@@ -17,6 +17,4 @@ RUN find /etc/systemd/system \
          -not -name '*systemd-user-sessions*' \
          -exec rm \{} \;
 
-RUN systemctl set-default multi-user.target
-
 CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
