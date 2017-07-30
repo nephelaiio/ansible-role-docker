@@ -77,6 +77,8 @@
   notify:
     - apt update
 
+- meta: flush_handlers
+
 # Install packages
 - name: install docker packages
   package:
@@ -86,8 +88,6 @@
   become: yes
   tags:
     - docker
-  notify:
-    - restart docker services
 
 # Install packages
 - name: install docker packages
@@ -99,8 +99,6 @@
   become: yes
   tags:
     - docker
-  notify:
-    - restart docker services
 
 # Configure docker paths
 - name: configure docker service path
@@ -110,8 +108,6 @@
   become: yes
   tags:
     - docker
-  notify:
-    - restart docker services
 
 # Configure docker
 - name: configure docker service
@@ -120,20 +116,17 @@
     dest: "{{ docker_configuration_file }}"
   become: yes
   notify:
+    - reload docker unit
     - restart docker services
 
-- name: reload docker unit
-  command: systemctl daemon-reload
-  become: yes
-  changed_when: False
+- meta: flush_handlers
 
 # Manage service
 - name: manage docker services
   service:
     name: "{{ docker_service_name }}"
-    state: "{{ docker_service_state }}"
+    state: "started"
   become: yes
-  changed_when: false
   tags:
     - docker
     - docker_service
@@ -147,14 +140,19 @@
     - docker
     - docker_service
 
+# Register user
+- name: register user
+  command: whoami
+  register: docker_user
+  changed_when: False
+
 # Manage users
 - name: manage docker users
   user:
     append: yes
     groups: "{{ docker_group }}"
-    name: "{{ item }}"
+    name: "{{ docker_user.stdout }}"
   become: yes
-  with_items: "{{ docker_users }}"
   tags:
     - docker
     - docker_service

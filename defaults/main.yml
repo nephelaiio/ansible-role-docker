@@ -8,5 +8,3 @@ docker_configuration_path: "{{ docker_configuration_file | dirname }}"
 docker_service_name: docker
 docker_service_state: started
 docker_group: docker
-docker_users:
-  - "{{ ansible_user }}"
