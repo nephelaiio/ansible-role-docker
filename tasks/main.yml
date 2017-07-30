@@ -80,24 +80,10 @@
 # Install packages
 - name: install docker packages
   package:
-    name: "{{ item }}"
-    state: "{{ docker_packages_state }}"
-  when: ansible_os_family == "RedHat"
-  become: yes
-  with_items: "{{ docker_packages }}"
-  tags:
-    - docker
-  notify:
-    - restart docker services
-
-# Install packages
-- name: install docker packages
-  package:
     name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
-  when: ansible_os_family == "Archlinux"
+  when: ansible_os_family != "Debian"
   become: yes
-  changed_when: false
   tags:
     - docker
   notify:
@@ -105,7 +91,7 @@
 
 # Install packages
 - name: install docker packages
-  package:
+  apt:
     name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
     allow_unauthenticated: yes
