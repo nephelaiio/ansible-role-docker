@@ -5,6 +5,9 @@ ENV container docker
 RUN pacman -Syy
 RUN pacman -Sy --noconfirm python python2 sudo ; ln -sf /usr/bin/python2 /usr/bin/python
 RUN pacman -Sy --noconfirm sed gzip systemd systemd-sysvcompat procps
+RUN echo LANG=en_US.UTF-8 > /etc/locale.conf
+RUN echo en_US.UTF-8 UTF-8 > /etc/locale.gen
+RUN locale-gen
 
 RUN find /etc/systemd/system \
          /lib/systemd/system \
@@ -15,9 +18,5 @@ RUN find /etc/systemd/system \
          -exec rm \{} \;
 
 RUN systemctl set-default multi-user.target
-
-RUN echo LANG=en_US.UTF-8 > /etc/locale.conf
-RUN echo en_US.UTF-8 UTF-8 > /etc/locale.gen
-RUN locale-gen
 
 CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
