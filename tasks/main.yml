@@ -122,6 +122,11 @@
   notify:
     - restart docker services
 
+- name: reload docker unit
+  command: systemctl daemon-reload
+  become: yes
+  changed_when: False
+
 # Manage service
 - name: manage docker services
   service:
