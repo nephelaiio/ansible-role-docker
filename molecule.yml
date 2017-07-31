@@ -12,13 +12,13 @@ docker:
       privileged: True
       ansible_groups:
         - test
-#    - name: ansible-docker-xenial
-#      image: ubuntu
-#      image_version: xenial
-#      dockerfile: docker/xenial.dockerfile
-#      privileged: True
-#      ansible_groups:
-#        - test
+    - name: ansible-docker-xenial
+      image: ubuntu
+      image_version: xenial
+      dockerfile: docker/xenial.dockerfile
+      privileged: True
+      ansible_groups:
+        - test
     - name: ansible-docker-centos7
       image: centos
       image_version: 7
