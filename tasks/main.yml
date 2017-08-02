@@ -148,7 +148,7 @@
   tags:
     - docker
     - docker_service
-  
+
 # Manage users
 - name: manage docker users
   user:
