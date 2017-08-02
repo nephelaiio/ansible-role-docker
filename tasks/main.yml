@@ -144,7 +144,7 @@
 - name: inspect user
   changed_when: False
   command: whoami
-  regiser: docker_user
+  register: docker_user
   tags:
     - docker
     - docker_service
