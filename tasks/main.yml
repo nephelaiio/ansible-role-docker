@@ -140,12 +140,15 @@
     - docker
     - docker_service
 
-# Register user
-- name: register user
-  command: whoami
-  register: docker_user
+# Inspect playbook user
+- name: inspect user
   changed_when: False
-
+  command: whoami
+  regiser: docker_user
+  tags:
+    - docker
+    - docker_service
+  
 # Manage users
 - name: manage docker users
   user:
