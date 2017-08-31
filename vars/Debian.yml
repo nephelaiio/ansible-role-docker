@@ -2,7 +2,7 @@
 # Variable definitions and overrides for Debian
 docker_repo_url: "deb https://apt.dockerproject.org/repo debian-{{ ansible_distribution_release }} main"
 docker_repo_keyserver: hkp://p80.pool.sks-keyservers.net:80
-docker_repo_key_id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+docker_repo_key_id: F76221572C52609D
 docker_remove_packages:
   - docker.io
 docker_packages:

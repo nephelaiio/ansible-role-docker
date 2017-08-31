@@ -1,5 +1,4 @@
 ---
-# Include variable definitions
 - name: include variable overrides
   include_vars: "{{ item }}"
   with_first_found:
@@ -9,7 +8,6 @@
   tags:
     - docker
 
-# Remove incompatible packages
 - name: remove incompatible packages
   package:
     name: "{{ docker_remove_packages }}"
@@ -20,7 +18,6 @@
   tags:
     - docker
 
-# Install apt helper packages
 - name: install apt helper packages
   package:
     name: "{{ docker_packages_helpers }}"
@@ -30,7 +27,6 @@
   tags:
     - docker
 
-# Install docker-py
 - name: install docker-py
   pip:
     name: "{{ docker_pip_helpers }}"
@@ -40,19 +36,7 @@
   tags:
     - docker
 
-# Install docker repository
-- name: install docker apt repository
-  apt_repository:
-    repo: "{{ docker_repo_url }}"
-    state: present
-    filename: docker
-  when: ansible_os_family == "Debian"
-  become: yes
-  tags:
-    - docker
-
-# Install docker repository key
-- name: install docker apt key
+- name: install apt key
   apt_key:
     keyserver: "{{ docker_repo_keyserver }}"
     state: present
@@ -62,8 +46,18 @@
   tags:
     - docker
 
-# Install docker repository
-- name: install docker yum repository
+- name: install apt repository
+  apt_repository:
+    repo: "{{ docker_repo_url }}"
+    state: present
+    filename: docker
+    validate_certs: no
+  when: ansible_os_family == "Debian"
+  become: yes
+  tags:
+    - docker
+
+- name: install yum repository
   yum_repository:
     baseurl: "{{ docker_repo_url }}"
     name: docker
@@ -79,8 +73,7 @@
 
 - meta: flush_handlers
 
-# Install packages
-- name: install docker packages
+- name: install packages
   package:
     name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
@@ -89,8 +82,7 @@
   tags:
     - docker
 
-# Install packages
-- name: install docker packages
+- name: install apt packages
   apt:
     name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
@@ -100,8 +92,7 @@
   tags:
     - docker
 
-# Configure docker paths
-- name: configure docker service path
+- name: configure service path
   file:
     path: "{{ docker_configuration_path }}"
     state: directory
@@ -109,8 +100,7 @@
   tags:
     - docker
 
-# Configure docker
-- name: configure docker service
+- name: configure service
   template:
     src: "{{ docker_configuration_template }}"
     dest: "{{ docker_configuration_file }}"
@@ -121,8 +111,7 @@
 
 - meta: flush_handlers
 
-# Manage service
-- name: manage docker services
+- name: manage service
   service:
     name: "{{ docker_service_name }}"
     state: "started"
@@ -131,31 +120,18 @@
     - docker
     - docker_service
 
-# Manage groups
 - name: manage docker groups
   group:
     name: "{{ docker_group }}"
   become: yes
   tags:
     - docker
-    - docker_service
 
-# Inspect playbook user
-- name: inspect user
-  changed_when: False
-  command: whoami
-  register: docker_user
-  tags:
-    - docker
-    - docker_service
-
-# Manage users
 - name: manage docker users
   user:
     append: yes
     groups: "{{ docker_group }}"
-    name: "{{ docker_user.stdout }}"
+    name: "{{ lookup('env','USER')}}"
   become: yes
   tags:
     - docker
-    - docker_service
