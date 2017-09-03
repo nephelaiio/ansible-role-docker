@@ -12,6 +12,12 @@ platforms:
     command: /usr/sbin/init
     volume_mounts:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: ubuntu
+    image: solita:ubuntu-systemd:latest
+    privileged: True
+    command: /sbin/init
+    volume_mounts:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: debian
     image: debian:stretch
     privileged: True
