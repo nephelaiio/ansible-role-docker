@@ -107,7 +107,6 @@
   become: yes
   notify:
     - reload docker unit
-    - restart docker services
 
 - meta: flush_handlers
 

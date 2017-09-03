@@ -5,12 +5,6 @@
   become: yes
   changed_when: False
 
-- name: restart docker services
-  service:
-    name: "{{ docker_service_name }}"
-    state: restarted
-  become: yes
-
 - name: apt update
   command: apt update
   become: yes
