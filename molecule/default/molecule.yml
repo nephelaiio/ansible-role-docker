@@ -12,6 +12,14 @@ platforms:
     command: /usr/sbin/init
     volume_mounts:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: ubuntu
+    image: ubuntu:xenial
+    privileged: True
+    command: /sbin/init
+    volume_mounts:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    groups:
+      - service_stopped
   - name: debian
     image: debian:stretch
     privileged: True
@@ -26,6 +34,10 @@ platforms:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
 provisioner:
   name: ansible
+  inventory:
+    group_vars:
+      service_stopped:
+        docker_service_state: stopped
   lint:
     name: ansible-lint
 scenario:
