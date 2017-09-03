@@ -19,7 +19,7 @@ platforms:
     volume_mounts:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
     groups:
-      - service_stopped
+      - service_unmanaged
   - name: debian
     image: debian:stretch
     privileged: True
@@ -36,8 +36,8 @@ provisioner:
   name: ansible
   inventory:
     group_vars:
-      service_stopped:
-        docker_service_state: stopped
+      service_unmanaged:
+        docker_service_manage: False
   lint:
     name: ansible-lint
 scenario:
