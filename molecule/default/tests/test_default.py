@@ -14,3 +14,4 @@ def test_client(Command):
 
 def test_service(Service):
     assert Service('docker').is_enabled
+    assert Service('docker').is_running
