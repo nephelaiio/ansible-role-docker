@@ -28,6 +28,9 @@ provisioner:
   name: ansible
   lint:
     name: ansible-lint
+    options:
+      excludes:
+        - molecule/
 scenario:
   name: default
 verifier:
