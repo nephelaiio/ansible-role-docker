@@ -125,6 +125,7 @@
   group:
     name: "{{ docker_group }}"
   become: yes
+  when: "{{ docker_group_manage }}"
   tags:
     - docker
 
@@ -134,5 +135,6 @@
     groups: "{{ docker_group }}"
     name: "{{ lookup('env','USER')}}"
   become: yes
+  when: "{{ docker_user_manage }}"
   tags:
     - docker
