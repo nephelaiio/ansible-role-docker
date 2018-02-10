@@ -75,7 +75,7 @@
 
 - name: install packages
   package:
-    name: "{{ docker_packages }}"
+    name: "{{ docker_packages | default(docker_packages_default) }}"
     state: "{{ docker_packages_state }}"
   when: ansible_os_family != "Debian"
   become: yes
@@ -84,7 +84,7 @@
 
 - name: install apt packages
   apt:
-    name: "{{ docker_packages }}"
+    name: "{{ docker_packages | default(docker_packages_default) }}"
     state: "{{ docker_packages_state }}"
     allow_unauthenticated: yes
   when: ansible_os_family == "Debian"
@@ -112,7 +112,7 @@
 
 - name: manage service
   service:
-    name: "{{ docker_service_name }}"
+    name: "{{ docker_service_name | default(docker_service_name_default) }}"
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
   become: yes

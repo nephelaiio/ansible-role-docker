@@ -1,5 +1,6 @@
 ---
-# Variable definitions and overrides for Debian
+docker_packages_default: docker-engine
+docker_service_name_default: docker
 docker_repo_url: "deb https://apt.dockerproject.org/repo debian-{{ ansible_distribution_release }} main"
 docker_repo_keyserver: hkp://p80.pool.sks-keyservers.net:80
 docker_repo_key_id: F76221572C52609D

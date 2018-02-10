@@ -1,6 +1,6 @@
 ---
-# Variable overrides and definitions for RedHat variants
 docker_repo_url: "https://yum.dockerproject.org/repo/main/centos/{{ ansible_distribution_major_version }}"
 docker_repo_gpgkey: https://yum.dockerproject.org/gpg
-docker_packages:
+docker_packages_default:
   - docker-engine
+docker_service_name_default: docker

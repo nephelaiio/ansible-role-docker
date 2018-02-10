@@ -1,13 +1,13 @@
 ---
-# Variable definitions and overrides for Ubuntu
 docker_repo_url: "deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main"
 docker_repo_keyserver: keyserver.ubuntu.com
 docker_repo_key_id: 58118E89F3A912897C070ADBF76221572C52609D
 docker_remove_packages:
   - docker.io
-docker_packages:
-  - "linux-image-extra-virtual"
+docker_packages_default:
+  - linux-image-extra-virtual
   - docker-engine
+docker_service_name_default: docker
 docker_packages_helpers:
   - apt-transport-https
   - ca-certificates

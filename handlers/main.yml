@@ -1,5 +1,4 @@
 ---
-# handlers file for docker
 - name: reload docker unit
   command: systemctl daemon-reload
   become: yes
