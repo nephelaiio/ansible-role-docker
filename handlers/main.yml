@@ -3,6 +3,8 @@
   command: systemctl daemon-reload
   become: yes
   changed_when: False
+  tags:
+    - skip_ansible_lint
 
 - name: apt update
   command: apt update
