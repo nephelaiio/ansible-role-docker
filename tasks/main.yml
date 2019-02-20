@@ -27,7 +27,7 @@
   tags:
     - docker
 
-- name: install docker-py
+- name: install pip helpers
   pip:
     name: "{{ docker_pip_helpers }}"
     state: "{{ docker_packages_state }}"
