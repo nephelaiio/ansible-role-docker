@@ -2,6 +2,5 @@
 docker_packages_default:
   - docker
   - python-docker
-  - python2-docker
 docker_service_name_default: docker
 docker_pip_helpers: []
