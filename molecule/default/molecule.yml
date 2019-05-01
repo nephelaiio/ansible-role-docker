@@ -12,7 +12,7 @@ platforms:
     command: /usr/sbin/init
     volume_mounts:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - name: debian
+  - name: stretch
     image: debian:stretch
     privileged: True
     command: /sbin/init
