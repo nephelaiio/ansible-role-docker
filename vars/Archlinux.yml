@@ -3,4 +3,5 @@ docker_packages_default:
   - docker
   - python-docker
 docker_service_name_default: docker
-docker_pip_helpers: []
+docker_packages_helpers_default: []
+docker_pip_helpers_default: []

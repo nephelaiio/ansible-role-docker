@@ -1,6 +1,8 @@
 ---
-docker_repo_url: "https://yum.dockerproject.org/repo/main/centos/{{ ansible_distribution_major_version }}"
-docker_repo_gpgkey: https://yum.dockerproject.org/gpg
 docker_packages_default:
   - docker-engine
 docker_service_name_default: docker
+docker_repo_url_default: "https://yum.dockerproject.org/repo/main/centos/{{ ansible_distribution_major_version }}"
+docker_repo_gpgkey_default: https://yum.dockerproject.org/gpg
+docker_packages_helpers_default: []
+docker_pip_helpers_default: docker-py
