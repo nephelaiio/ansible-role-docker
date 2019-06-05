@@ -1,7 +1,9 @@
 ---
-docker_repo_url_default: "https://yum.dockerproject.org/repo/main/centos/{{ ansible_distribution_major_version }}"
+docker_repo_url_default: "https://download.docker.com/linux/centos/docker-ce.repo"
 docker_repo_gpgkey_default: https://yum.dockerproject.org/gpg
-docker_packages_helpers_default: []
+docker_packages_helpers_default:
+  - device-mapper-persistent-data
+  - lvm2
 docker_pip_helpers_default: docker-py
 docker_remove_packages:
   - docker

@@ -2,7 +2,7 @@
 docker_packages_default:
   - docker-ce
   - docker-ce-cli
-  - containerd
+  - containerd.io
 docker_packages_state: present
 docker_configuration_template: mountflags.conf.j2
 docker_configuration_file: /etc/systemd/system/docker.service.d/mountflags.conf
