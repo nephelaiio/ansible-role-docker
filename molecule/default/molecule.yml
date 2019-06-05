@@ -6,10 +6,10 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: centos7
-    image: centos/systemd:latest
+  - name: centos
+    image: centos:7
     privileged: True
-    command: /usr/lib/systemd/systemd
+    command: /usr/sbin/init
     volume_mounts:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: stretch
