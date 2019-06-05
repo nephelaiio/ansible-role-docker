@@ -38,6 +38,8 @@
   when:
     - ansible_os_family == "Debian"
     - ansible_key_module.failed
+  tags:
+    - skip_ansible_lint
 
 - name: install apt repository
   apt_repository:
