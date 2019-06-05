@@ -14,7 +14,7 @@ Please refer to the [defaults file](/defaults/main.yml) for an up to date list o
 ```
 - hosts: servers
   roles:
-     - role: docker
+     - role: nephelaiio.docker
        docker_packages_state: latest
 ```
 
