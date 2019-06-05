@@ -35,7 +35,7 @@
   apt_key:
     keyserver: "{{ docker_repo_keyserver | default(docker_repo_keyserver_default) }}"
     state: present
-    id: "{{ docker_repo_key_id | default(docker_repo_key_id_default)}}"
+    id: "{{ docker_repo_key_id | default(docker_repo_key_id_default) }}"
   when: ansible_os_family == "Debian"
   tags:
     - docker
