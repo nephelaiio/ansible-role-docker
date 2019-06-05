@@ -3,9 +3,9 @@ docker_packages_default:
   - linux-image-extra-virtual
   - docker-engine
 docker_service_name_default: docker
-docker_repo_url_default: "deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main"
-docker_repo_keyserver_default: keyserver.ubuntu.com
-docker_repo_key_id_default: 58118E89F3A912897C070ADBF76221572C52609D
+docker_repo_url_default: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+docker_repo_keyserver_default: https://download.docker.com/linux/ubuntu/gpg
+docker_repo_key_id_default: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 docker_remove_packages:
   - docker.io
 docker_packages_helpers_default:
