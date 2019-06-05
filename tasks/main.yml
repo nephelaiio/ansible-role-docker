@@ -35,6 +35,8 @@
 - name: force install apt key
   shell: |
     curl -fsSL {{ docker_repo_keyserver | default(docker_repo_keyserver_default) }} | sudo apt-key add -
+  args:
+    warn: false
   when:
     - ansible_os_family == "Debian"
     - apt_key_module.failed
