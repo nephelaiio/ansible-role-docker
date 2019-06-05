@@ -5,8 +5,6 @@
     - "vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
     - "vars/{{ ansible_distribution }}.yml"
     - "vars/{{ ansible_os_family }}.yml"
-  tags:
-    - docker
 
 - name: remove incompatible packages
   package:
@@ -14,22 +12,16 @@
     state: absent
   when:
     - docker_remove_packages is defined
-  tags:
-    - docker
 
 - name: install helper packages
   package:
     name: "{{ docker_packages_helpers | default(docker_packages_helpers_default) }}"
     state: "{{ docker_packages_state }}"
-  tags:
-    - docker
 
 - name: install pip helpers
   pip:
     name: "{{ docker_pip_helpers | default(docker_pip_helpers_default) }}"
     state: "{{ docker_packages_state }}"
-  tags:
-    - docker
 
 - name: install apt key
   apt_key:
@@ -37,8 +29,15 @@
     state: present
     id: "{{ docker_repo_key_id | default(docker_repo_key_id_default) }}"
   when: ansible_os_family == "Debian"
-  tags:
-    - docker
+  ignore_errors: yes
+  register: apt_key_module
+
+- name: force install apt key
+  shell: |
+    curl -fsSL {{ docker_repo_keyserver | default(docker_repo_keyserver_default) }} | sudo apt-key add -
+  when:
+    - ansible_os_family == "Debian"
+    - ansible_key_module.failed
 
 - name: install apt repository
   apt_repository:
@@ -47,8 +46,6 @@
     filename: docker
     validate_certs: no
   when: ansible_os_family == "Debian"
-  tags:
-    - docker
 
 - name: install yum repository
   yum_repository:
@@ -58,8 +55,6 @@
     gpgcheck: yes
     gpgkey: "{{ docker_repo_gpgkey | default(docker_repo_gpgkey_default) }}"
   when: ansible_os_family == "RedHat"
-  tags:
-    - docker
   notify:
     - apt update
 
@@ -70,8 +65,6 @@
     name: "{{ docker_packages | default(docker_packages_default) }}"
     state: "{{ docker_packages_state }}"
   when: ansible_os_family != "Debian"
-  tags:
-    - docker
 
 - name: install apt packages
   apt:
@@ -79,15 +72,11 @@
     state: "{{ docker_packages_state }}"
     allow_unauthenticated: yes
   when: ansible_os_family == "Debian"
-  tags:
-    - docker
 
 - name: configure service path
   file:
     path: "{{ docker_configuration_path }}"
     state: directory
-  tags:
-    - docker
 
 - name: configure service
   template:
@@ -104,16 +93,12 @@
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
   when: docker_service_manage
-  tags:
-    - docker
     - docker_service
 
 - name: manage docker groups
   group:
     name: "{{ docker_group }}"
   when: docker_group_manage
-  tags:
-    - docker
 
 - name: manage docker users
   user:
@@ -121,5 +106,3 @@
     groups: "{{ docker_group }}"
     name: "{{ lookup('env', 'USER') }}"
   when: docker_user_manage
-  tags:
-    - docker

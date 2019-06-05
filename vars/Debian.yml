@@ -10,4 +10,7 @@ docker_remove_packages:
 docker_packages_helpers_default:
   - apt-transport-https
   - ca-certificates
+  - python-docker
+  - python3-docker
+  - curl
 docker_pip_helpers_default: docker-py
