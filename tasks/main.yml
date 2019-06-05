@@ -37,7 +37,7 @@
     curl -fsSL {{ docker_repo_keyserver | default(docker_repo_keyserver_default) }} | sudo apt-key add -
   when:
     - ansible_os_family == "Debian"
-    - ansible_key_module.failed
+    - apt_key_module.failed
   tags:
     - skip_ansible_lint
 
