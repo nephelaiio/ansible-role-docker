@@ -91,7 +91,7 @@
 
 - name: manage service
   service:
-    name: "{{ docker_service_name | default(docker_service_name_default) }}"
+    name: "{{ docker_service_name }}"
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
   when: docker_service_manage
