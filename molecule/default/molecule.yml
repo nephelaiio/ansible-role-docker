@@ -19,7 +19,13 @@ platforms:
     volume_mounts:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - name: xenial
-    image: debian:xenial
+    image: ubuntu:xenial
+    privileged: True
+    command: /sbin/init
+    volume_mounts:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - name: bionic
+    image: ubuntu:bionic
     privileged: True
     command: /sbin/init
     volume_mounts:
