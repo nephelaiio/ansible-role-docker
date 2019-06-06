@@ -94,16 +94,16 @@
     name: "{{ docker_service_name }}"
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
-  when: docker_service_manage
+  when: docker_service_manage | bool
 
 - name: manage docker groups
   group:
     name: "{{ docker_group }}"
-  when: docker_group_manage
+  when: docker_group_manage | bool
 
 - name: manage docker users
   user:
     append: yes
     groups: "{{ docker_group }}"
     name: "{{ lookup('env', 'USER') }}"
-  when: docker_user_manage
+  when: docker_user_manage | bool
