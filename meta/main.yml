@@ -22,4 +22,7 @@ galaxy_info:
 
 dependencies:
   - role: nephelaiio.pip
-    version: 3.0.0
+    vars:
+      pip_pip_names:
+        - docker
+    version: 4.0.0
