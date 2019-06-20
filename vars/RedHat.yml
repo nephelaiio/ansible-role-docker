@@ -4,7 +4,7 @@ docker_repo_gpgkey_default: https://yum.dockerproject.org/gpg
 docker_packages_helpers_default:
   - device-mapper-persistent-data
   - lvm2
-docker_pip_helpers_default: docker-py
+docker_pip_helpers_default: docker
 docker_remove_packages:
   - docker
   - docker-client
