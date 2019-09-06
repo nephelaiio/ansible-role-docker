@@ -1,12 +1,5 @@
 ---
-- name: reload docker unit
-  command: systemctl daemon-reload
-  become: yes
-  changed_when: False
-  tags:
-    - skip_ansible_lint
-
-- name: apt update
-  command: apt update
-  become: yes
-  when: ansible_os_family == "Debian"
+- name: reload docker service
+  service:
+    name: "{{ docker_service_name }}"
+    state: restarted

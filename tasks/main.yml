@@ -57,8 +57,6 @@
     dest: /etc/yum.repos.d/docker.repo
     mode: 0644
   when: ansible_os_family == "RedHat"
-  notify:
-    - apt update
 
 - meta: flush_handlers
 
@@ -80,21 +78,27 @@
     path: "{{ docker_configuration_path }}"
     state: directory
 
-- name: configure service
-  template:
-    src: "{{ docker_configuration_template }}"
-    dest: "{{ docker_configuration_file }}"
-  notify:
-    - reload docker unit
+- block:
 
-- meta: flush_handlers
+    - name: configure service
+      template:
+        src: "{{ docker_configuration_template }}"
+        dest: "{{ docker_configuration_file }}"
 
-- name: manage service
-  service:
-    name: "{{ docker_service_name }}"
-    state: "{{ docker_service_state }}"
-    enabled: "{{ docker_service_enabled }}"
+    - name: manage service
+      systemd:
+        name: "{{ docker_service_name }}"
+        state: "{{ docker_service_state }}"
+        enabled: "{{ docker_service_enabled }}"
+        daemon_reload: yes
+
   when: docker_service_manage | bool
+
+- name: configure logging
+  copy:
+    dest: "{{ docker_log_conf_file }}"
+    content: "{{ docker_log_conf | to_nice_json(indent=2) }}"
+  when: docker_log_conf_manage | bool
 
 - name: manage docker groups
   group:
