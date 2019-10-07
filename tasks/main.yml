@@ -98,6 +98,7 @@
   copy:
     dest: "{{ docker_log_conf_file }}"
     content: "{{ docker_log_conf | to_nice_json(indent=2) }}"
+  notify: restart docker service
   when: docker_log_conf_manage | bool
 
 - name: manage docker groups
