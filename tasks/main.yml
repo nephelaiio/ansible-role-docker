@@ -55,6 +55,7 @@
   get_url:
     url: "{{ docker_repo_url | default(docker_repo_url_default) }}"
     dest: /etc/yum.repos.d/docker.repo
+    mode: 0644
   when:
     - ansible_os_family == "RedHat"
     - docker_repo_state != 'absent'
@@ -62,8 +63,8 @@
 - name: install yum repository
   file:
     dest: /etc/yum.repos.d/docker.repo
-    mode: 0644
-    state: "{{ docker_repo_state }}"
+    state: absent
+  when: docker_repo_state == 'absent'
 
 - meta: flush_handlers
 
