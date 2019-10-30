@@ -21,3 +21,4 @@ docker_log_conf:
   log-opts:
     max-size: "10m"
     max-file: '3'
+docker_repo_state: present

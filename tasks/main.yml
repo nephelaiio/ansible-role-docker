@@ -46,7 +46,7 @@
 - name: install apt repository
   apt_repository:
     repo: "{{ docker_repo_url | default(docker_repo_url_default) }}"
-    state: present
+    state: "{{ docker_repo_state }}"
     filename: docker
     validate_certs: no
   when: ansible_os_family == "Debian"
@@ -55,8 +55,15 @@
   get_url:
     url: "{{ docker_repo_url | default(docker_repo_url_default) }}"
     dest: /etc/yum.repos.d/docker.repo
+  when:
+    - ansible_os_family == "RedHat"
+    - docker_repo_state != 'absent'
+
+- name: install yum repository
+  file:
+    dest: /etc/yum.repos.d/docker.repo
     mode: 0644
-  when: ansible_os_family == "RedHat"
+    state: "{{ docker_repo_state }}"
 
 - meta: flush_handlers
 
@@ -71,6 +78,7 @@
     name: "{{ docker_packages | default(docker_packages_default) }}"
     state: "{{ docker_packages_state }}"
     allow_unauthenticated: yes
+    update_cache: yes
   when: ansible_os_family == "Debian"
 
 - name: configure service path
