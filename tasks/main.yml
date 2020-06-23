@@ -22,6 +22,7 @@
   pip:
     name: "{{ docker_pip_helpers | default(docker_pip_helpers_default) }}"
     state: "{{ docker_packages_state }}"
+  changed_when: false
 
 - name: install apt key
   apt_key:
