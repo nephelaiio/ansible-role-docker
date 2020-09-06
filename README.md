@@ -5,6 +5,14 @@
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/docker) to install and configure [Docker](https://www.docker.com)
 
+## Local install
+
+Execute the following from the command line shell
+
+```
+curl -s https://raw.githubusercontent.com/nephelaiio/ansible-role-docker/master/install.sh | bash
+```
+
 ## Role Variables
 
 Please refer to the [defaults file](/defaults/main.yml) for an up to date list of input parameters.
@@ -23,8 +31,10 @@ Please refer to the [defaults file](/defaults/main.yml) for an up to date list o
 Please make sure your environment has [docker](https://www.docker.com) installed in order to run role validation tests. Additional python dependencies are listed in the [requirements file](https://github.com/nephelaiio/ansible-role-requirements/blob/master/requirements.txt)
 
 Role is tested against the following distributions (docker images):
+  * Ubuntu Focal
   * Ubuntu Bionic
   * Ubuntu Xenial
+  * CentOS 8
   * CentOS 7
   * Debian Stretch
 

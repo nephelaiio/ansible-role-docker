@@ -1,10 +1,16 @@
 ---
 - name: include variable overrides
   include_vars: "{{ item }}"
-  with_first_found:
-    - "vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-    - "vars/{{ ansible_distribution }}.yml"
-    - "vars/{{ ansible_os_family }}.yml"
+  vars:
+    params:
+      - "vars/{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}.yml"
+      - "vars/{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+      - "vars/{{ ansible_distribution | lower }}.yml"
+      - "vars/{{ ansible_os_family | lower }}.yml"
+      - "vars/default.yml"
+  loop: "{{ q('first_found', params, skip=True) }}"
+  tags:
+    - always
 
 - name: remove incompatible packages
   package:
@@ -12,17 +18,23 @@
     state: absent
   when:
     - docker_remove_packages is defined
+  tags:
+    - install
 
 - name: install helper packages
   package:
     name: "{{ docker_packages_helpers | default(docker_packages_helpers_default) }}"
     state: "{{ docker_packages_state }}"
+  tags:
+    - install
 
 - name: install pip helpers
   pip:
     name: "{{ docker_pip_helpers | default(docker_pip_helpers_default) }}"
     state: "{{ docker_packages_state }}"
   changed_when: false
+  tags:
+    - install
 
 - name: install apt key
   apt_key:
@@ -32,6 +44,8 @@
   when: ansible_os_family == "Debian"
   ignore_errors: yes
   register: apt_key_module
+  tags:
+    - install
 
 - name: force install apt key
   shell: |
@@ -43,6 +57,7 @@
     - apt_key_module.failed
   tags:
     - skip_ansible_lint
+    - install
 
 - name: install apt repository
   apt_repository:
@@ -51,7 +66,8 @@
     filename: docker
     validate_certs: no
   when: ansible_os_family == "Debian"
-
+  tags:
+    - install
 - name: install yum repository
   get_url:
     url: "{{ docker_repo_url | default(docker_repo_url_default) }}"
@@ -60,12 +76,15 @@
   when:
     - ansible_os_family == "RedHat"
     - docker_repo_state != 'absent'
+    - install
 
 - name: install yum repository
   file:
     dest: /etc/yum.repos.d/docker.repo
     state: absent
   when: docker_repo_state == 'absent'
+  tags:
+    - install
 
 - meta: flush_handlers
 
@@ -74,6 +93,8 @@
     name: "{{ docker_packages | default(docker_packages_default) }}"
     state: "{{ docker_packages_state }}"
   when: ansible_os_family != "Debian"
+  tags:
+    - install
 
 - name: install apt packages
   apt:
@@ -82,11 +103,15 @@
     allow_unauthenticated: yes
     update_cache: yes
   when: ansible_os_family == "Debian"
+  tags:
+    - install
 
 - name: configure service path
   file:
     path: "{{ docker_configuration_path }}"
     state: directory
+  tags:
+    - install
 
 - block:
 
@@ -103,6 +128,8 @@
         daemon_reload: yes
 
   when: docker_service_manage | bool
+  tags:
+    - install
 
 - name: configure logging
   copy:
@@ -110,11 +137,15 @@
     content: "{{ docker_log_conf | to_nice_json(indent=2) }}"
   notify: restart docker service
   when: docker_log_conf_manage | bool
+  tags:
+    - configure
 
 - name: manage docker groups
   group:
     name: "{{ docker_group }}"
   when: docker_group_manage | bool
+  tags:
+    - configure
 
 - name: manage docker users
   user:
@@ -122,3 +153,5 @@
     groups: "{{ docker_group }}"
     name: "{{ lookup('env', 'USER') }}"
   when: docker_user_manage | bool
+  tags:
+    - configure
