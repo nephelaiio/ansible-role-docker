@@ -76,6 +76,7 @@
   when:
     - ansible_os_family == "RedHat"
     - docker_repo_state != 'absent'
+  tags:
     - install
 
 - name: install yum repository
