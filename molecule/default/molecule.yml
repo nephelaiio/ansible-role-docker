@@ -8,43 +8,16 @@ lint: |
   yamllint .
   ansible-lint .
 platforms:
-  - name: centos7
-    image: centos:7
-    privileged: True
-    command: /usr/sbin/init
+  - name: instance
+    image: geerlingguy/docker-${MOLECULE_DISTRO:-centos7}-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    privileged: true
     volume_mounts:
       - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - name: centos8
-    image: centos:8
-    privileged: True
-    command: /usr/sbin/init
-    volume_mounts:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - name: stretch
-    image: debian:stretch
-    privileged: True
-    command: /sbin/init
-    volume_mounts:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - name: xenial
-    image: ubuntu:xenial
-    privileged: True
-    command: /sbin/init
-    volume_mounts:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - name: bionic
-    image: ubuntu:bionic
-    privileged: True
-    command: /sbin/init
-    volume_mounts:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - name: focal
-    image: ubuntu:focal
-    privileged: True
-    command: /sbin/init
-    volume_mounts:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    pre_build_image: true
 provisioner:
   name: ansible
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}
 verifier:
   name: testinfra
