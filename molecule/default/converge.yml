@@ -19,6 +19,5 @@
       changed_when: false
       failed_when: systemctl_status.rc > 1
 
-
   roles:
     - role: nephelaiio.docker
