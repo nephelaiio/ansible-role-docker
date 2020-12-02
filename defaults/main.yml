@@ -14,6 +14,7 @@ docker_service_manage: True
 docker_group: docker
 docker_user_manage: yes
 docker_group_manage: yes
+docker_user: "{{ lookup('env', 'USER') }}"
 docker_log_conf_manage: no
 docker_log_conf_file: /etc/docker/daemon.json
 docker_log_conf:

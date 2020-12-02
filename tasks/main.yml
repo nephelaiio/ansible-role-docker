@@ -152,7 +152,7 @@
   user:
     append: yes
     groups: "{{ docker_group }}"
-    name: "{{ lookup('env', 'USER') }}"
+    name: "{{ docker_user }}"
   when: docker_user_manage | bool
   tags:
     - configure
