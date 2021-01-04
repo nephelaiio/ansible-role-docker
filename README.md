@@ -1,7 +1,7 @@
 # nephelaiio.docker
 
-[![Build Status](https://travis-ci.org/nephelaiio/ansible-role-docker.svg?branch=master)](https://travis-ci.org/nephelaiio/ansible-role-docker)
-[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-systemd--service-blue.svg)](https://galaxy.ansible.com/nephelaiio/docker/)
+[![Build Status](https://github.com/nephelaiio/ansible-role-docker/workflows/CI/badge.svg)](https://github.com/nephelaiio/ansible-role-docker/actions)
+[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.docker-blue.svg)](https://galaxy.ansible.com/nephelaiio/docker/)
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/docker) to install and configure [Docker](https://www.docker.com)
 

@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: docker
   author: Ted Cook
   description: An Ansible role to install and configure docker
   license: MIT

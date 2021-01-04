@@ -3,17 +3,13 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint: |
-  set -e
-  yamllint .
-  ansible-lint .
 platforms:
   - name: instance
-    image: geerlingguy/docker-${MOLECULE_DISTRO:-centos7}-ansible
+    image: "${MOLECULE_DOCKER_IMAGE}"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
-    volume_mounts:
-      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
     pre_build_image: true
 provisioner:
   name: ansible
