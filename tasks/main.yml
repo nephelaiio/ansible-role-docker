@@ -2,7 +2,6 @@
 - name: set variable overrides
   set_fact:
     _docker_packages_helpers: "{{ docker_packages_helpers | default(docker_packages_helpers_default | sorted_get(overrides)) }}"
-    _docker_packages: "{{ docker_packages | default(docker_packages_default | sorted_get(overrides)) }}"
   vars:
     overrides:
       - "{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}"
@@ -20,70 +19,74 @@
   tags:
     - install
 
-- name: install helper packages
-  package:
-    name: "{{ _docker_packages_helpers }}"
-    state: "{{ docker_packages_state }}"
-  tags:
-    - install
+- block:
 
-- name: install apt key
-  apt_key:
-    keyserver: "{{ docker_deb_repo.keyserver }}"
-    state: present
-    id: "{{ docker_deb_repo.key }}"
-  when: ansible_os_family == "Debian"
-  ignore_errors: yes
-  register: apt_key_module
-  tags:
-    - install
+    - name: install helper packages
+      package:
+        name: "{{ _docker_packages_helpers }}"
+        state: "{{ docker_packages_state }}"
+      tags:
+        - install
 
-- name: force install apt key
-  shell: |
-    curl -fsSL {{ docker_deb_repo.keyserver }} | sudo apt-key add -
-  args:
-    warn: false
-  when:
-    - ansible_os_family == "Debian"
-    - apt_key_module.failed
-  tags:
-    - skip_ansible_lint
-    - install
+    - name: install apt key
+      apt_key:
+        keyserver: "{{ docker_deb_repo.keyserver }}"
+        state: present
+        id: "{{ docker_deb_repo.key }}"
+      when: ansible_os_family == "Debian"
+      ignore_errors: yes
+      register: apt_key_module
+      tags:
+        - install
 
-- name: install apt repository
-  apt_repository:
-    repo: "{{ docker_deb_repo.url }}"
-    state: "{{ docker_repo_state }}"
-    filename: docker
-    validate_certs: no
-  when: ansible_os_family == "Debian"
-  tags:
-    - install
+    - name: force install apt key
+      shell: |
+        curl -fsSL {{ docker_deb_repo.keyserver }} | sudo apt-key add -
+      args:
+        warn: false
+      when:
+        - ansible_os_family == "Debian"
+        - apt_key_module.failed
+      tags:
+        - skip_ansible_lint
+        - install
 
-- name: install yum repository
-  get_url:
-    url: "{{ docker_rpm_repo.url }"
-    dest: /etc/yum.repos.d/docker.repo
-    mode: 0644
-  when:
-    - ansible_os_family == "RedHat"
-    - docker_repo_state != 'absent'
-  tags:
-    - install
+    - name: install apt repository
+      apt_repository:
+        repo: "{{ docker_deb_repo.url }}"
+        state: "{{ docker_repo_state }}"
+        filename: docker
+        validate_certs: no
+      when: ansible_os_family == "Debian"
+      tags:
+        - install
 
-- name: remove yum repository
-  file:
-    dest: /etc/yum.repos.d/docker.repo
-    state: absent
-  when: docker_repo_state == 'absent'
-  tags:
-    - install
+    - name: install yum repository
+      get_url:
+        url: "{{ docker_rpm_repo.url }"
+        dest: /etc/yum.repos.d/docker.repo
+        mode: 0644
+      when:
+        - ansible_os_family == "RedHat"
+        - docker_repo_state != 'absent'
+      tags:
+        - install
 
-- meta: flush_handlers
+    - name: remove yum repository
+      file:
+        dest: /etc/yum.repos.d/docker.repo
+        state: absent
+      when: docker_repo_state == 'absent'
+      tags:
+        - install
+
+    - meta: flush_handlers
+
+  when: docker_repo_manage | bool
 
 - name: install packages
   package:
-    name: "{{ _docker_packages }}"
+    name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
   when: ansible_os_family != "Debian"
   tags:
@@ -91,7 +94,7 @@
 
 - name: install apt packages
   apt:
-    name: "{{ _docker_packages }}"
+    name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
     allow_unauthenticated: yes
     update_cache: yes

@@ -1,12 +1,13 @@
 ---
 docker_deb_repo:
-  url: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_os_family }} {{ ansible_distribution_release }} stable"
-  keyserver: "https://download.docker.com/linux/{{ ansible_os_family }}/gpg"
+  url: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} stable"
+  keyserver: "https://download.docker.com/linux/{{ ansible_os_family | lower }}/gpg"
   key: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 docker_rpm_repo:
   url: "https://download.docker.com/linux/centos/docker-ce.repo"
   gpgkey: https://yum.dockerproject.org/gpg
 docker_repo_state: present
+docker_repo_manage: yes
 
 docker_packages_helpers_default:
   redhat:
