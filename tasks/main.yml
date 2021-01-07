@@ -1,16 +1,15 @@
 ---
-- name: include variable overrides
-  include_vars: "{{ item }}"
+- name: set variable overrides
+  set_fact:
+    _docker_packages_helpers: "{{ docker_packages_helpers | default(docker_packages_helpers_default | sorted_get(overrides)) }}"
+    _docker_packages: "{{ docker_packages | default(docker_packages_default | sorted_get(overrides)) }}"
   vars:
-    params:
-      - "vars/{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}.yml"
-      - "vars/{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
-      - "vars/{{ ansible_distribution | lower }}.yml"
-      - "vars/{{ ansible_os_family | lower }}.yml"
-      - "vars/default.yml"
-  loop: "{{ q('first_found', params, skip=True) }}"
-  tags:
-    - always
+    overrides:
+      - "{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}"
+      - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}"
+      - "{{ ansible_distribution | lower }}"
+      - "{{ ansible_os_family | lower }}"
+      - "default"
 
 - name: remove incompatible packages
   package:
@@ -23,16 +22,16 @@
 
 - name: install helper packages
   package:
-    name: "{{ docker_packages_helpers | default(docker_packages_helpers_default) }}"
+    name: "{{ _docker_packages_helpers }}"
     state: "{{ docker_packages_state }}"
   tags:
     - install
 
 - name: install apt key
   apt_key:
-    keyserver: "{{ docker_repo_keyserver | default(docker_repo_keyserver_default) }}"
+    keyserver: "{{ docker_deb_repo.keyserver }}"
     state: present
-    id: "{{ docker_repo_key_id | default(docker_repo_key_id_default) }}"
+    id: "{{ docker_deb_repo.key }}"
   when: ansible_os_family == "Debian"
   ignore_errors: yes
   register: apt_key_module
@@ -41,7 +40,7 @@
 
 - name: force install apt key
   shell: |
-    curl -fsSL {{ docker_repo_keyserver | default(docker_repo_keyserver_default) }} | sudo apt-key add -
+    curl -fsSL {{ docker_deb_repo.keyserver }} | sudo apt-key add -
   args:
     warn: false
   when:
@@ -53,16 +52,17 @@
 
 - name: install apt repository
   apt_repository:
-    repo: "{{ docker_repo_url | default(docker_repo_url_default) }}"
+    repo: "{{ docker_deb_repo.url }}"
     state: "{{ docker_repo_state }}"
     filename: docker
     validate_certs: no
   when: ansible_os_family == "Debian"
   tags:
     - install
+
 - name: install yum repository
   get_url:
-    url: "{{ docker_repo_url | default(docker_repo_url_default) }}"
+    url: "{{ docker_rpm_repo.url }"
     dest: /etc/yum.repos.d/docker.repo
     mode: 0644
   when:
@@ -71,7 +71,7 @@
   tags:
     - install
 
-- name: install yum repository
+- name: remove yum repository
   file:
     dest: /etc/yum.repos.d/docker.repo
     state: absent
@@ -83,7 +83,7 @@
 
 - name: install packages
   package:
-    name: "{{ docker_packages | default(docker_packages_default) }}"
+    name: "{{ _docker_packages }}"
     state: "{{ docker_packages_state }}"
   when: ansible_os_family != "Debian"
   tags:
@@ -91,7 +91,7 @@
 
 - name: install apt packages
   apt:
-    name: "{{ docker_packages | default(docker_packages_default) }}"
+    name: "{{ _docker_packages }}"
     state: "{{ docker_packages_state }}"
     allow_unauthenticated: yes
     update_cache: yes

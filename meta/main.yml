@@ -24,4 +24,4 @@ galaxy_info:
 dependencies:
   - role: nephelaiio.pip
     vars:
-      pip_pip_name: "{{ docker_pip_helpers | default(docker_pip_helpers_default) }}"
+      pip_pip_names: "{{ docker_pip_helpers | default(docker_pip_helpers_default) }}"

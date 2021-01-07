@@ -1,8 +1,37 @@
 ---
-docker_packages_default:
+docker_deb_repo:
+  url: "deb [arch=amd64] https://download.docker.com/linux/{{ ansible_os_family }} {{ ansible_distribution_release }} stable"
+  keyserver: "https://download.docker.com/linux/{{ ansible_os_family }}/gpg"
+  key: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+docker_rpm_repo:
+  url: "https://download.docker.com/linux/centos/docker-ce.repo"
+  gpgkey: https://yum.dockerproject.org/gpg
+docker_repo_state: present
+
+docker_packages_helpers_default:
+  redhat:
+    - device-mapper-persistent-data
+    - lvm2
+  debian:
+    - apt-transport-https
+    - ca-certificates
+    - python-docker
+    - python3-docker
+    - curl
+  ubuntu-focal:
+    - apt-transport-https
+    - ca-certificates
+    - python3-docker
+    - curl
+
+docker_packages:
   - docker-ce
   - docker-ce-cli
   - containerd.io
+
+docker_pip_helpers:
+  - docker
+
 docker_packages_state: present
 docker_configuration_template: mountflags.conf.j2
 docker_configuration_file: /etc/systemd/system/docker.service.d/mountflags.conf
@@ -22,4 +51,3 @@ docker_log_conf:
   log-opts:
     max-size: "10m"
     max-file: '3'
-docker_repo_state: present
