@@ -28,14 +28,6 @@
   tags:
     - install
 
-- name: install pip helpers
-  pip:
-    name: "{{ docker_pip_helpers | default(docker_pip_helpers_default) }}"
-    state: "{{ docker_packages_state }}"
-  changed_when: false
-  tags:
-    - install
-
 - name: install apt key
   apt_key:
     keyserver: "{{ docker_repo_keyserver | default(docker_repo_keyserver_default) }}"
