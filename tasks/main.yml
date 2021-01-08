@@ -9,6 +9,8 @@
       - "{{ ansible_distribution | lower }}"
       - "{{ ansible_os_family | lower }}"
       - "default"
+  tags:
+    - always
 
 - name: remove incompatible packages
   package:
