@@ -17,5 +17,5 @@
       apt:
         name: python-is-python3
       when:
-        - ansible_os_distribution | lower == 'ubuntu'
+        - ansible_distribution | lower == 'ubuntu'
         - (ansible_distribution_release | lower) not in ubuntu_python2
