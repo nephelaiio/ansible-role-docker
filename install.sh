@@ -61,7 +61,7 @@ else
     cp -a . "$tmpdir"
 fi
 pushd "$tmpdir/install"
-ansible-galaxy install -r nephelaiio.docker
+ansible-galaxy install nephelaiio.docker
 ansible-playbook --become --connection=local -i inventory playbook.yml -e docker_pip_helpers='[]' -e docker_user="$USER"
 popd
 
