@@ -62,7 +62,7 @@ else
 fi
 pushd "$tmpdir/install"
 if [ -f ../requirements.yml ]; then
-    ansible-galaxy install -r ../requirements.yml --force
+    ansible-galaxy install -r nephelaiio.docker
 fi
 ansible-playbook --become --connection=local -i inventory playbook.yml -e docker_pip_helpers='[]' -e docker_user="$USER"
 popd
