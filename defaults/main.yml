@@ -24,6 +24,11 @@ docker_packages_helpers_default:
     - ca-certificates
     - python3-docker
     - curl
+  ubuntu:
+    - apt-transport-https
+    - ca-certificates
+    - python3-docker
+    - curl
 
 docker_packages:
   - docker-ce
