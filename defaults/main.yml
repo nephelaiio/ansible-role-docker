@@ -7,7 +7,7 @@ docker_rpm_repo:
   url: "https://download.docker.com/linux/centos/docker-ce.repo"
   gpgkey: https://yum.dockerproject.org/gpg
 docker_repo_state: present
-docker_repo_manage: yes
+docker_repo_manage: "{{ docker_packages_state != 'absent' }}"
 
 docker_packages_helpers_default:
   redhat:
@@ -44,11 +44,11 @@ docker_configuration_file: /etc/systemd/system/docker.service.d/mountflags.conf
 docker_configuration_path: "{{ docker_configuration_file | dirname }}"
 docker_service_name: docker
 docker_service_state: started
-docker_service_enabled: yes
-docker_service_manage: True
+docker_service_enabled: true
+docker_service_manage: "{{ docker_packages_state != 'absent' }}"
 docker_group: docker
-docker_user_manage: yes
-docker_group_manage: yes
+docker_user_manage: true
+docker_group_manage: true
 docker_user: "{{ lookup('env', 'USER') }}"
 docker_log_conf_manage: no
 docker_log_conf_file: /etc/docker/daemon.json
