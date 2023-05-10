@@ -1,0 +1,36 @@
+---
+- name: Verify
+
+  hosts: all
+
+  pre_tasks:
+
+    - name: verify docker cli is installed
+      ansible.builtin.command: docker --version
+
+    - name: verify docker pip is installed
+      ansible.builtin.command: python3 -c "import docker"
+
+    - name: gather service facts
+      ansible.builtin.service_facts:
+
+    - name: check service definition
+      ansible.builtin.fail:
+        msg: docker service is not available
+      vars:
+        _service: docker.service
+      when: _service not in ansible_facts.services
+
+    - name: check service running state
+      ansible.builtin.fail:
+        msg: docker service is not running
+      vars:
+        _service: docker.service
+      when: ansible_facts.services[_service].state != "running"
+
+    - name: check service startup state
+      ansible.builtin.fail:
+        msg: docker service is not running
+      vars:
+        _service: docker.service
+      when: ansible_facts.services[_service].status != "enabled"

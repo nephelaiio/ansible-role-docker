@@ -4,20 +4,21 @@ galaxy_info:
   author: nephelaiio
   description: An Ansible role to install and configure docker
   license: MIT
-  min_ansible_version: 2.2
+  min_ansible_version: '2.2'
   platforms:
     - name: EL
       versions:
-        - 7
-    - name: Archlinux
+        - '7'
+    - name: ArchLinux
       versions:
-        - all
+        - 'all'
     - name: Ubuntu
       versions:
-        - xenial
+        - 'bionic'
+        - 'jammy'
     - name: Debian
       versions:
-        - stretch
+        - 'bullseye'
   galaxy_tags:
     - docker
 

@@ -1,6 +1,6 @@
 # nephelaiio.docker
 
-[![Build Status](https://github.com/nephelaiio/ansible-role-docker/workflows/CI/badge.svg)](https://github.com/nephelaiio/ansible-role-docker/actions)
+[![Build Status](https://github.com/nephelaiio/ansible-role-docker/workflows/molecule/badge.svg)](https://github.com/nephelaiio/ansible-role-docker/actions/worfklows/molecule.yml) [![Build Status](https://github.com/nephelaiio/ansible-role-docker/workflows/install/badge.svg)](https://github.com/nephelaiio/ansible-role-docker/actions/workflows/install.yml) [![Build Status](https://github.com/nephelaiio/ansible-role-docker/workflows/release/badge.svg)](https://github.com/nephelaiio/ansible-role-docker/actions/workflows/release.yml)
 [![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-nephelaiio.docker-blue.svg)](https://galaxy.ansible.com/nephelaiio/docker/)
 
 An [ansible role](https://galaxy.ansible.com/nephelaiio/docker) to install and configure [Docker](https://www.docker.com)

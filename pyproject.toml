@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "nephelaiio-docker"
+version = "0.1.0"
+description = ""
+authors = ["Ted Cook <teodoro.cook@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ansible = "^7.5.0"
+ansible-lint = "~5"
+MarkupSafe = "2.0.1"
+yamllint = "^1.31.0"
+molecule-plugins = "^23.4.1"
+requests = "^2.30.0"
+molecule = "^5.0.1"
+docker = "^6.1.1"
+netaddr = "^0.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

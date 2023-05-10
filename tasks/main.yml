@@ -1,6 +1,6 @@
 ---
 - name: set variable overrides
-  set_fact:
+  ansible.builtin.set_fact:
     _docker_packages_helpers: "{{ docker_packages_helpers | default(docker_packages_helpers_default | sorted_get(overrides)) }}"
   vars:
     overrides:
@@ -9,26 +9,25 @@
       - "{{ ansible_distribution | lower }}"
       - "{{ ansible_os_family | lower }}"
       - "default"
-  tags:
-    - always
+  tags: always
 
 - name: remove incompatible packages
-  package:
+  ansible.builtin.package:
     name: "{{ docker_remove_packages }}"
     state: absent
   when:
     - docker_remove_packages is defined
-  tags:
-    - install
+  tags: install
 
-- block:
+- name: configure apt repository
+  when: docker_repo_manage
+  tags: install
+  block:
 
     - name: install helper packages
       package:
         name: "{{ _docker_packages_helpers }}"
         state: "{{ docker_packages_state }}"
-      tags:
-        - install
 
     - name: install apt key
       apt_key:
@@ -36,120 +35,102 @@
         state: present
         id: "{{ docker_deb_repo.key }}"
       when: ansible_os_family == "Debian"
-      ignore_errors: yes
+      ignore_errors: true
       register: apt_key_module
-      tags:
-        - install
 
     - name: force install apt key
-      shell: |
+      ansible.builtin.shell: |
         curl -fsSL {{ docker_deb_repo.keyserver }} | sudo apt-key add -
-      args:
-        warn: false
       when:
         - ansible_os_family == "Debian"
         - apt_key_module.failed
-      tags:
-        - skip_ansible_lint
-        - install
+      tags: skip_ansible_lint
 
     - name: install apt repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: "{{ docker_deb_repo.url }}"
         state: "{{ docker_repo_state }}"
         filename: docker
         validate_certs: no
       when: ansible_os_family == "Debian"
-      tags:
-        - install
 
     - name: install yum repository
-      get_url:
+      ansible.builtin.get_url:
         url: "{{ docker_rpm_repo.url }}"
         dest: /etc/yum.repos.d/docker.repo
         mode: 0644
-      when:
-        - ansible_os_family == "RedHat"
-        - docker_repo_state != 'absent'
-      tags:
-        - install
+      when: ansible_os_family == "RedHat"
 
     - name: remove yum repository
-      file:
+      ansible.builtin.file:
         dest: /etc/yum.repos.d/docker.repo
         state: absent
       when: docker_repo_state == 'absent'
-      tags:
-        - install
 
-    - meta: flush_handlers
-
-  when: docker_repo_manage | bool
+    - name: flush handlers
+      ansible.builtin.meta: flush_handlers
 
 - name: install packages
-  package:
+  ansible.builtin.package:
     name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
   when: ansible_os_family != "Debian"
-  tags:
-    - install
+  tags: install
 
 - name: install apt packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ docker_packages }}"
     state: "{{ docker_packages_state }}"
-    allow_unauthenticated: yes
-    update_cache: yes
+    allow_unauthenticated: true
+    update_cache: true
   when: ansible_os_family == "Debian"
-  tags:
-    - install
+  tags: install
 
-- name: configure service path
-  file:
-    path: "{{ docker_configuration_path }}"
-    state: directory
-  tags:
-    - install
+- name: configure service
+  when: docker_packages_state != 'absent'
+  block:
 
-- block:
+    - name: configure service path
+      ansible.builtin.file:
+        path: "{{ docker_configuration_path }}"
+        state: directory
+      tags: install
 
-    - name: configure service
-      template:
-        src: "{{ docker_configuration_template }}"
-        dest: "{{ docker_configuration_file }}"
+    - name: configure systemd service
+      when: docker_service_manage
+      tags: install
+      block:
 
-    - name: manage service
-      systemd:
-        name: "{{ docker_service_name }}"
-        state: "{{ docker_service_state }}"
-        enabled: "{{ docker_service_enabled }}"
-        daemon_reload: yes
+        - name: configure service
+          ansible.builtin.template:
+            src: "{{ docker_configuration_template }}"
+            dest: "{{ docker_configuration_file }}"
 
-  when: docker_service_manage | bool
-  tags:
-    - install
+        - name: manage service
+          ansible.builtin.systemd:
+            name: "{{ docker_service_name }}"
+            state: "{{ docker_service_state }}"
+            enabled: "{{ docker_service_enabled }}"
+            daemon_reload: true
 
-- name: configure logging
-  copy:
-    dest: "{{ docker_log_conf_file }}"
-    content: "{{ docker_log_conf | to_nice_json(indent=2) }}"
-  notify: restart docker service
-  when: docker_log_conf_manage | bool
-  tags:
-    - configure
+    - name: configure logging
+      ansible.builtin.copy:
+        dest: "{{ docker_log_conf_file }}"
+        content: "{{ docker_log_conf | to_nice_json(indent=2) }}"
+      notify: restart docker service
+      when: docker_log_conf_manage
+      tags: configure
 
-- name: manage docker groups
-  group:
-    name: "{{ docker_group }}"
-  when: docker_group_manage | bool
-  tags:
-    - configure
+    - name: manage docker groups
+      ansible.builtin.group:
+        name: "{{ docker_group }}"
+      when: docker_group_manage
+      tags: configure
 
-- name: manage docker users
-  user:
-    append: yes
-    groups: "{{ docker_group }}"
-    name: "{{ docker_user }}"
-  when: docker_user_manage | bool
-  tags:
-    - configure
+    - name: manage docker users
+      ansible.builtin.user:
+        append: true
+        groups: "{{ docker_group }}"
+        name: "{{ docker_user }}"
+      when: docker_user_manage
+      tags: configure

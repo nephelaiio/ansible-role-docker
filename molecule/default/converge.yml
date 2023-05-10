@@ -1,21 +1,23 @@
 ---
 - name: Converge
+
   hosts: all
-  vars:
-    ubuntu_python2:
-      - xenial
-      - bionic
+
+  roles:
+
+    - nephelaiio.docker
+
   pre_tasks:
+
     - name: update apt package cache
       apt:
-        update_cache: yes
-      when: (ansible_os_family | lower) == 'debian'
-  roles:
-    - role: nephelaiio.docker
+        package: gpg-agent
+        update_cache: true
+      when: ansible_os_family == 'Debian'
+
   post_tasks:
+
     - name: install python3 binary redirection
       apt:
         name: python-is-python3
-      when:
-        - ansible_distribution | lower == 'ubuntu'
-        - (ansible_distribution_release | lower) not in ubuntu_python2
+      when: ansible_os_family == 'Debian'
