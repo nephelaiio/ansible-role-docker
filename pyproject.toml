@@ -10,7 +10,11 @@ ansible = "^7.5.0"
 ansible-lint = "~5"
 MarkupSafe = "2.0.1"
 yamllint = "^1.31.0"
-molecule = {extras = ["docker"], version = "^5.0.1"}
+molecule-plugins = "^23.4.1"
+requests = "^2.30.0"
+molecule = "^5.0.1"
+docker = "^6.1.1"
+netaddr = "^0.8.0"
 
 [build-system]
 requires = ["poetry-core"]
