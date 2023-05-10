@@ -3,9 +3,6 @@ name: install
 
 on:
   pull_request:
-  push:
-    branches:
-      - master
 
 defaults:
   run:
