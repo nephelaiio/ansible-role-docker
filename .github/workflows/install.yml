@@ -1,5 +1,5 @@
 ---
-name: Install
+name: install
 
 on:
   pull_request:
@@ -14,27 +14,31 @@ defaults:
 jobs:
 
   local:
-    name: Local install
+    name: local install
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the codebase.
-        uses: actions/checkout@v2
+
+      - name: check out the codebase
+        uses: actions/checkout@v3
         with:
           path: 'nephelaiio.docker'
 
-      - name: Set up Python 3.
-        uses: actions/setup-python@v2
+      - name: set up python 3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: Install test dependencies.
-        run: pip3 install ansible molecule[docker] docker
+      - name: install poetry
+        run: pip3 install poetry
 
-      - name: Run local install
+      - name: install pips
+        run: poetry install
+
+      - name: run local install
         run: bash install.sh
 
-      - name: Test docker binary
+      - name: test docker binary
         run: docker --version
 
-      - name: Test docker permissions
+      - name: test docker permissions
         run: docker ps
