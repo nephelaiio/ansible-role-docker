@@ -9,7 +9,7 @@
       ansible.builtin.command: docker --version
 
     - name: verify docker pip is installed
-      ansible.builtin.command: python -c "import docker"
+      ansible.builtin.command: python3 -c "import docker"
 
     - name: gather service facts
       ansible.builtin.service_facts:

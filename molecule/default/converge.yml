@@ -13,4 +13,11 @@
       apt:
         package: gpg-agent
         update_cache: true
-      when: (ansible_os_family | lower) == 'debian'
+      when: ansible_os_family == 'Debian'
+
+  post_tasks:
+
+    - name: install python3 binary redirection
+      apt:
+        name: python-is-python3
+      when: ansible_os_family == 'Debian'
