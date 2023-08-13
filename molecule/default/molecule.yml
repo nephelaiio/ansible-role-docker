@@ -19,3 +19,7 @@ provisioner:
   name: ansible
 verifier:
   name: ansible
+lint: |
+  set -e
+  run yamllint .
+  run ansible-lint .
