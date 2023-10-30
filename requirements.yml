@@ -1,3 +1,6 @@
 ---
-- nephelaiio.plugins
-- nephelaiio.pip
+roles:
+  - nephelaiio.plugins
+  - nephelaiio.pip
+collections:
+  - community.docker
