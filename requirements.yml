@@ -1,6 +1,7 @@
 ---
 roles:
-  - nephelaiio.plugins
+  - name: robertdebock.update
   - nephelaiio.pip
 collections:
   - community.docker
+  - nephelaiio.plugins
