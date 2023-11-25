@@ -13,18 +13,13 @@
   tags: install
   block:
 
-    - name: Install Debian package requirements
+    - name: Install Debian package helpers
       ansible.builtin.package:
         name:
           - apt-transport-https
           - ca-certificates
           - python3-docker
           - curl
-
-    - name: Install helper packages
-      ansible.builtin.package:
-        name: "{{ _docker_packages_helpers }}"
-        state: "{{ docker_packages_state }}"
 
     - name: Install apt key
       ansible.builtin.apt_key:
@@ -78,11 +73,11 @@
 
 - name: Install packages
   block:
-    - name: Install docker packages
-      ansible.builtin.package:
+    - name: Install yum packages
+      ansible.builtin.yum:
         name: "{{ docker_packages }}"
         state: "{{ docker_packages_state }}"
-      when: ansible_os_family != "Debian"
+      when: ansible_os_family == "RedHat"
       tags: install
 
     - name: Install apt packages
