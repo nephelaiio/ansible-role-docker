@@ -48,7 +48,7 @@ jobs:
         run: sudo apt-get install -y make
 
       - name: Install dependencies
-        run: make install
+        run: make poetry
 
       - name: Debug test environment
         run: make debug
