@@ -49,6 +49,14 @@
   tags: install
   block:
 
+    - name: Install epel repository
+      ansible.builtin.package:
+        name: epel-release
+
+    - name: Install RedHat package helpers
+      ansible.builtin.package:
+        name: python3-docker
+
     - name: Install yum repository
       ansible.builtin.get_url:
         url: "{{ docker_rpm_repo.url }}"
