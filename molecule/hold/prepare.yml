@@ -1,0 +1,9 @@
+---
+- name: Deploy docker packages
+  hosts: all
+  become: true
+  roles:
+    - nephelaiio.docker
+  vars:
+    docker_packages_state: absent
+    docker_repo_manage: true
