@@ -9,12 +9,10 @@ defaults:
     working-directory: 'nephelaiio.docker'
 
 jobs:
-
   local:
     name: local install
     runs-on: ubuntu-latest
     steps:
-
       - name: check out the codebase
         uses: actions/checkout@v3
         with:

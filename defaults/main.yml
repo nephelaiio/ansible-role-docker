@@ -9,27 +9,6 @@ docker_rpm_repo:
 docker_repo_state: present
 docker_repo_manage: "{{ docker_packages_state != 'absent' }}"
 
-docker_packages_helpers_default:
-  redhat:
-    - device-mapper-persistent-data
-    - lvm2
-  debian:
-    - apt-transport-https
-    - ca-certificates
-    - python-docker
-    - python3-docker
-    - curl
-  ubuntu-focal:
-    - apt-transport-https
-    - ca-certificates
-    - python3-docker
-    - curl
-  ubuntu:
-    - apt-transport-https
-    - ca-certificates
-    - python3-docker
-    - curl
-
 docker_packages:
   - docker-ce
   - docker-ce-cli

@@ -1,119 +1,129 @@
 ---
-- name: set variable overrides
-  ansible.builtin.set_fact:
-    _docker_packages_helpers: "{{ docker_packages_helpers | default(docker_packages_helpers_default | sorted_get(overrides)) }}"
-  vars:
-    overrides:
-      - "{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}"
-      - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}"
-      - "{{ ansible_distribution | lower }}"
-      - "{{ ansible_os_family | lower }}"
-      - "default"
-  tags: always
-
-- name: remove incompatible packages
+- name: Remove incompatible packages
   ansible.builtin.package:
     name: "{{ docker_remove_packages }}"
     state: absent
-  when:
-    - docker_remove_packages is defined
+  when: docker_remove_packages is defined
   tags: install
 
-- name: configure apt repository
-  when: docker_repo_manage
+- name: Configure apt repository
+  when:
+    - ansible_os_family == "Debian"
+    - docker_repo_manage
   tags: install
   block:
 
-    - name: install helper packages
-      package:
-        name: "{{ _docker_packages_helpers }}"
-        state: "{{ docker_packages_state }}"
+    - name: Install Debian package helpers
+      ansible.builtin.package:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - python3-docker
+          - curl
 
-    - name: install apt key
-      apt_key:
+    - name: Install apt key
+      ansible.builtin.apt_key:
         keyserver: "{{ docker_deb_repo.keyserver }}"
         state: present
         id: "{{ docker_deb_repo.key }}"
-      when: ansible_os_family == "Debian"
       ignore_errors: true
       register: apt_key_module
 
-    - name: force install apt key
+    - name: Force install apt key
       ansible.builtin.shell: |
         curl -fsSL {{ docker_deb_repo.keyserver }} | sudo apt-key add -
-      when:
-        - ansible_os_family == "Debian"
-        - apt_key_module.failed
+      when: apt_key_module.failed
       tags: skip_ansible_lint
 
-    - name: install apt repository
+    - name: Install apt repository
       ansible.builtin.apt_repository:
         repo: "{{ docker_deb_repo.url }}"
         state: "{{ docker_repo_state }}"
         filename: docker
         validate_certs: no
-      when: ansible_os_family == "Debian"
 
-    - name: install yum repository
+- name: Configure yum repository
+  when:
+    - ansible_os_family == "RedHat"
+    - docker_repo_manage
+  tags: install
+  block:
+
+    - name: Install epel repository
+      ansible.builtin.package:
+        name: epel-release
+
+    - name: Install RedHat package helpers
+      ansible.builtin.package:
+        name: python3-docker
+
+    - name: Install yum repository
       ansible.builtin.get_url:
         url: "{{ docker_rpm_repo.url }}"
         dest: /etc/yum.repos.d/docker.repo
         mode: 0644
-      when: ansible_os_family == "RedHat"
 
-    - name: remove yum repository
+    - name: Remove yum repository
       ansible.builtin.file:
         dest: /etc/yum.repos.d/docker.repo
         state: absent
-      when: docker_repo_state == 'absent'
 
-    - name: flush handlers
-      ansible.builtin.meta: flush_handlers
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
 
-- name: install packages
-  ansible.builtin.package:
-    name: "{{ docker_packages }}"
-    state: "{{ docker_packages_state }}"
-  when: ansible_os_family != "Debian"
-  tags: install
+- name: Release package holds
+  ansible.builtin.include_tasks: lock.yml
+  vars:
+    _lock_state: install
 
-- name: install apt packages
-  ansible.builtin.apt:
-    name: "{{ docker_packages }}"
-    state: "{{ docker_packages_state }}"
-    allow_unauthenticated: true
-    update_cache: true
-  when: ansible_os_family == "Debian"
-  tags: install
+- name: Install packages
+  block:
+    - name: Install yum packages
+      ansible.builtin.yum:
+        name: "{{ docker_packages }}"
+        state: "{{ docker_packages_state }}"
+      when: ansible_os_family == "RedHat"
+      tags: install
 
-- name: configure service
+    - name: Install apt packages
+      ansible.builtin.apt:
+        name: "{{ docker_packages }}"
+        state: "{{ docker_packages_state }}"
+        allow_unauthenticated: true
+        update_cache: true
+      when: ansible_os_family == "Debian"
+      tags: install
+
+  always:
+    - name: Configure package holds
+      ansible.builtin.include_tasks: lock.yml
+      vars:
+        _lock_state: hold
+
+- name: Configure service
   when: docker_packages_state != 'absent'
   block:
 
-    - name: configure service path
+    - name: Configure service path
       ansible.builtin.file:
         path: "{{ docker_configuration_path }}"
         state: directory
       tags: install
 
-    - name: configure systemd service
+    - name: Configure systemd service
       when: docker_service_manage
       tags: install
       block:
 
-        - name: configure service
+        - name: Configure service
           ansible.builtin.template:
             src: "{{ docker_configuration_template }}"
             dest: "{{ docker_configuration_file }}"
 
-        - name: manage service
-          ansible.builtin.systemd:
-            name: "{{ docker_service_name }}"
-            state: "{{ docker_service_state }}"
-            enabled: "{{ docker_service_enabled }}"
-            daemon_reload: true
+        - name: Include service tasks
+          ansible.builtin.include_tasks: service.yml
 
-    - name: configure logging
+    - name: Configure logging
       ansible.builtin.copy:
         dest: "{{ docker_log_conf_file }}"
         content: "{{ docker_log_conf | to_nice_json(indent=2) }}"
@@ -121,13 +131,13 @@
       when: docker_log_conf_manage
       tags: configure
 
-    - name: manage docker groups
+    - name: Manage docker groups
       ansible.builtin.group:
         name: "{{ docker_group }}"
       when: docker_group_manage
       tags: configure
 
-    - name: manage docker users
+    - name: Manage docker users
       ansible.builtin.user:
         append: true
         groups: "{{ docker_group }}"

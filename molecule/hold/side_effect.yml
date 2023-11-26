@@ -1,0 +1,6 @@
+---
+- name: Update OS
+  hosts: all
+  become: true
+  roles:
+    - robertdebock.update

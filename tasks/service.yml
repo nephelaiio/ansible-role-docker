@@ -1,0 +1,7 @@
+---
+- name: Manage service
+  ansible.builtin.systemd:
+    name: "{{ docker_service_name }}"
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
+    daemon_reload: true
