@@ -1,9 +1,5 @@
 ---
 - name: Perform local docker install
-
   hosts: localhost
-
   roles:
-
-    - nephelaiio.plugins
     - nephelaiio.docker

@@ -19,6 +19,7 @@
           - apt-transport-https
           - ca-certificates
           - python3-docker
+          - python3-pip
           - curl
 
     - name: Install apt key
@@ -55,7 +56,9 @@
 
     - name: Install RedHat package helpers
       ansible.builtin.package:
-        name: python3-docker
+        name:
+          - python3-pip
+          - python3-docker
 
     - name: Install yum repository
       ansible.builtin.get_url:
