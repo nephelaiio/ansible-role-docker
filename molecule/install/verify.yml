@@ -8,7 +8,7 @@
       ansible.builtin.command: "docker --version"
 
     - name: Verify docker pip is installed
-      ansible.builtin.command: "python3 -c import docker"
+      ansible.builtin.command: "python3 -c 'import docker'"
 
     - name: Gather service facts
       ansible.builtin.service_facts:
@@ -16,14 +16,14 @@
     - name: Check service definition
       ansible.builtin.assert:
         that: docker service is available
-      when: _service not in ansible_facts.services
+      when: docker_service not in ansible_facts.services
 
     - name: Check service running state
       ansible.builtin.assert:
         that: docker service is running
-      when: ansible_facts.services[_service].state != "running"
+      when: ansible_facts.services[docker_service].state != "running"
 
     - name: Check service startup state
       ansible.builtin.assert:
         that: docker service is running
-      when: ansible_facts.services[_service].status != "enabled"
+      when: ansible_facts.services[docker_service].status != "enabled"
