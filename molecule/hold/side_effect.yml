@@ -4,11 +4,3 @@
   become: true
   roles:
     - robertdebock.update
-  serial: 1
-  tasks:
-    - name: Wait for MongoDB to be up
-      community.mongodb.mongodb_shell:
-        eval: "db.runCommand({ping: 1})"
-        mongo_cmd: "{{ mongodb_shell | default(omit) }}"
-      retries: 6
-      delay: 10
