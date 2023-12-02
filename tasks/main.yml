@@ -111,6 +111,9 @@
       ansible.builtin.file:
         path: "{{ docker_configuration_path }}"
         state: directory
+        group: root
+        owner: root
+        mode: 0644
       tags: install
 
     - name: Configure systemd service
@@ -122,6 +125,9 @@
           ansible.builtin.template:
             src: "{{ docker_configuration_template }}"
             dest: "{{ docker_configuration_file }}"
+            group: root
+            owner: root
+            mode: 0644
 
         - name: Include service tasks
           ansible.builtin.include_tasks: service.yml
@@ -130,6 +136,9 @@
       ansible.builtin.copy:
         dest: "{{ docker_log_conf_file }}"
         content: "{{ docker_log_conf | to_nice_json(indent=2) }}"
+        group: root
+        owner: root
+        mode: 0644
       notify: restart docker service
       when: docker_log_conf_manage
       tags: configure
