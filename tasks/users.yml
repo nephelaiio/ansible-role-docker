@@ -1,0 +1,12 @@
+---
+- name: Manage docker groups
+  ansible.builtin.group:
+    name: "{{ docker_group }}"
+  when: docker_group_manage
+
+- name: Manage docker users
+  ansible.builtin.user:
+    append: true
+    groups: "{{ docker_group }}"
+    name: "{{ docker_user }}"
+  when: docker_user_manage
