@@ -7,13 +7,14 @@
   block:
 
     - name: Install Debian package helpers
-      ansible.builtin.package:
+      ansible.builtin.apt:
         name:
           - apt-transport-https
           - ca-certificates
           - python3-docker
           - python3-pip
           - curl
+        update_cache: true
 
     - name: Install apt key
       ansible.builtin.apt_key:
