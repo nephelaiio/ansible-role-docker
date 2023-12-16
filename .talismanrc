@@ -1,3 +1,5 @@
 fileignoreconfig:
   - filename: poetry.lock
     ignore_detectors: [ filecontent ]
+  - filename: tasks/repo.yml
+    ignore_detectors: [ filecontent ]

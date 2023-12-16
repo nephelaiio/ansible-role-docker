@@ -1,0 +1,68 @@
+---
+- name: Configure apt repository
+  when:
+    - ansible_os_family == "Debian"
+    - docker_repo_manage
+  tags: install
+  block:
+
+    - name: Install Debian package helpers
+      ansible.builtin.package:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - python3-docker
+          - python3-pip
+          - curl
+
+    - name: Install apt key
+      ansible.builtin.apt_key:
+        keyserver: "{{ docker_deb_repo.keyserver }}"
+        state: present
+        id: "{{ docker_deb_repo.key }}"
+      ignore_errors: true
+      register: apt_key_module
+
+    - name: Force install apt key
+      ansible.builtin.shell: |
+        curl -fsSL {{ docker_deb_repo.keyserver }} | sudo apt-key add -
+      when: apt_key_module.failed
+      tags: skip_ansible_lint
+
+    - name: Install apt repository
+      ansible.builtin.apt_repository:
+        repo: "{{ docker_deb_repo.url }}"
+        state: "{{ docker_repo_state }}"
+        filename: docker
+        validate_certs: no
+
+- name: Configure yum repository
+  when:
+    - ansible_os_family == "RedHat"
+    - docker_repo_manage
+  tags: install
+  block:
+
+    - name: Install epel repository
+      ansible.builtin.package:
+        name: epel-release
+
+    - name: Install RedHat package helpers
+      ansible.builtin.package:
+        name:
+          - python3-pip
+          - python3-docker
+
+    - name: Install yum repository
+      ansible.builtin.get_url:
+        url: "{{ docker_rpm_repo.url }}"
+        dest: /etc/yum.repos.d/docker.repo
+        mode: 0644
+
+    - name: Remove yum repository
+      ansible.builtin.file:
+        dest: /etc/yum.repos.d/docker.repo
+        state: absent
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
