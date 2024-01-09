@@ -32,7 +32,9 @@ collections:
 requirements: roles collections
 
 dependency create prepare converge idempotence side-effect verify destroy login reset:
-	MOLECULE_DOCKER_IMAGE=${MOLECULE_DOCKER_IMAGE} poetry run molecule $@ -s ${MOLECULE_SCENARIO}
+	MOLECULE_DOCKER_IMAGE=${MOLECULE_DOCKER_IMAGE} \
+	MOLECULE_DOCKER_COMMAND=${MOLECULE_DOCKER_COMMAND} \
+		poetry run molecule $@ -s ${MOLECULE_SCENARIO}
 
 ignore:
 	poetry run ansible-lint --generate-ignore
