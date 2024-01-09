@@ -30,7 +30,7 @@
       when: apt_key_module.failed
       tags: skip_ansible_lint
 
-    - name: Install apt repository
+    - name: Manage apt repository
       ansible.builtin.apt_repository:
         repo: "{{ docker_deb_repo.url }}"
         state: "{{ docker_repo_state }}"
@@ -54,16 +54,12 @@
           - python3-pip
           - python3-docker
 
-    - name: Install yum repository
+    - name: Manage yum repository
       ansible.builtin.get_url:
         url: "{{ docker_rpm_repo.url }}"
+        state: "{{ docker_repo_state }}"
         dest: /etc/yum.repos.d/docker.repo
         mode: 0644
-
-    - name: Remove yum repository
-      ansible.builtin.file:
-        dest: /etc/yum.repos.d/docker.repo
-        state: absent
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
