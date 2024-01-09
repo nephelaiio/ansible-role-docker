@@ -65,6 +65,7 @@
       ansible.builtin.file:
         dest: /etc/yum.repos.d/docker.repo
         state: "{{ docker_repo_state }}"
+        mode: 0644
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
