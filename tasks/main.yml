@@ -10,6 +10,12 @@
   when: docker_remove_packages is defined
   tags: install
 
+- name: Install package prerequisites for RedHat systems
+  ansible.builtin.package:
+    name: yum-plugin-versionlock
+    state: present
+  when: ansible_os_family == "RedHat"
+
 - name: Release package holds
   ansible.builtin.include_tasks: lock.yml
   vars:
