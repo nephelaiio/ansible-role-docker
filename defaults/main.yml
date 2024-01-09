@@ -12,7 +12,6 @@ docker_repo_manage: "{{ docker_packages_state != 'absent' }}"
 docker_packages:
   - docker-ce
   - docker-ce-cli
-  - containerd.io
 
 docker_packages_state: present
 docker_configuration_template: mountflags.conf.j2
