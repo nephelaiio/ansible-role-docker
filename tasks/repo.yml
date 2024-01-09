@@ -57,9 +57,14 @@
     - name: Manage yum repository
       ansible.builtin.get_url:
         url: "{{ docker_rpm_repo.url }}"
-        state: "{{ docker_repo_state }}"
         dest: /etc/yum.repos.d/docker.repo
         mode: 0644
+      when: docker_repo_state != 'absent'
+
+    - name: Remove yum repository
+      ansible.builtin.file:
+        dest: /etc/yum.repos.d/docker.repo
+        state: "{{ docker_repo_state }}"
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
