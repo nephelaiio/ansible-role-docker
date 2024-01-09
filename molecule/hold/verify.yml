@@ -63,27 +63,35 @@
       ansible.builtin.package_facts:
 
     - name: Verify package versions
-      ansible.builtin.fail:
-        msg: "Expected installed version for package {{ _package }} to be {{ _version }}, found {{ _installed }}"
+      ansible.builtin.assert:
+        that:
+          - _package in packages
+          - _version == _installed
+        fail_msg: "Expected installed version for package {{ _package }} to be {{ _version }}, found {{ _installed }}"
+        success_msg: "Installed version for package {{ _package }} is {{ _installed }}"
       vars:
         _package: "{{ item.split('=') | first }}"
         _version: "{{ item.split('=') | last }}"
         _installed: "{{ (packages[_package] | default([{'version': 'None'}]))[0].version }}"
+      loop_control:
+        label: "{{ _package }}"
       loop: "{{ docker_package_list }}"
-      when:
-        - ansible_os_family == "Debian"
-        - _package not in packages or _version != _installed
+      when: ansible_os_family == "Debian"
 
     - name: Verify package versions
-      ansible.builtin.fail:
-        msg: "Expected installed version for package {{ _package }} to be {{ _version }}, found {{ _installed }}"
+      ansible.builtin.assert:
+        that:
+          - _package in packages
+          - _version == _installed
+        fail_msg: "Expected installed version for package {{ _package }} to be {{ _version }}, found {{ _installed }}"
+        success_msg: "Installed version for package {{ _package }} is {{ _installed }}"
       vars:
         _prefix: "^{{ _package }}-"
         _suffix: "-.*$"
         _package: "{{ item.0 }}"
-        _version: "{{ item.1 | regex_replace(_prefix, '') | regex_replace(_suffix, '') }}"
+        _version: "{{ item.1 | regex_replace(_prefix, '') | regex_replace(_suffix, '') | split(':') | last }}"
         _installed: "{{ (packages[_package] | default([{'version': 'None'}]))[0].version }}"
+      loop_control:
+        label: "{{ _package }}"
       loop: "{{ docker_packages | zip(docker_package_list) }}"
-      when:
-        - ansible_os_family == "RedHat"
-        - _package not in packages or _version != _installed
+      when: ansible_os_family == "RedHat"

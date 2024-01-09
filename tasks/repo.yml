@@ -64,8 +64,8 @@
     - name: Remove yum repository
       ansible.builtin.file:
         dest: /etc/yum.repos.d/docker.repo
-        state: "{{ docker_repo_state }}"
-        mode: 0644
+        state: absent
+      when: docker_repo_state == 'absent'
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
