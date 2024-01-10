@@ -13,12 +13,7 @@
 
 - name: Configure yum package locks
   community.general.yum_versionlock:
-    name: "{{ item.split('=') | first }}"
+    name: "{{ [docker_packages] | flatten }}"
     state: "{{ 'absent' if _lock_state == 'install' else 'present' }}"
-  vars:
-    _version_regex: ".*=.*"
-    _package_versions: "{{ [docker_packages] | flatten | map('regex_search', _version_regex) }}"
-    _package_holds: "{{ _package_versions | select('string') }}"
-  loop: "{{ _package_holds }}"
   when: ansible_os_family == "RedHat"
   changed_when: false
