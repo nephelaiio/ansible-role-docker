@@ -3,3 +3,4 @@
   ansible.builtin.service:
     name: "{{ docker_service_name }}"
     state: restarted
+    listen: docker.restart

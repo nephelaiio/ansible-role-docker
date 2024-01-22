@@ -6,5 +6,5 @@
     group: root
     owner: root
     mode: 0644
-  notify: restart docker service
+  notify: docker.restart
   when: docker_log_conf_manage
