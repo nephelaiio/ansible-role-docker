@@ -36,6 +36,7 @@
         state: "{{ docker_repo_state }}"
         filename: docker
         validate_certs: no
+      notify: update_apt_cache
 
 - name: Configure yum repository
   when:
