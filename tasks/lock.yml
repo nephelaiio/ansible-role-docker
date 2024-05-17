@@ -20,7 +20,7 @@
       vars:
         _package_name: "{{ item.split('=') | first }}"
       loop: "{{ docker_apt_package_holds }}"
-      when: _lock_state == hold or _package_name in ansible_facts.packages
+      when: _lock_state == 'hold' or _package_name in ansible_facts.packages
       changed_when: false
 
 - name: Configure yum package locks
