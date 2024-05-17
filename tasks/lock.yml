@@ -18,7 +18,7 @@
         name: "{{ _package_name }}"
         selection: "{{ _lock_state }}"
       vars:
-        _package_name: "{{ item.split('=') | first  }}"
+        _package_name: "{{ item.split('=') | first }}"
       loop: "{{ docker_apt_package_holds }}"
       when: _lock_state == hold or _package_name in ansible_facts.packages
       changed_when: false
