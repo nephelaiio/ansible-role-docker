@@ -1,15 +1,27 @@
 ---
 - name: Configure apt package holds
-  ansible.builtin.dpkg_selections:
-    name: "{{ item.split('=') | first }}"
-    selection: "{{ _lock_state }}"
-  vars:
-    _version_regex: ".*=.*"
-    _package_versions: "{{ [docker_packages] | flatten | map('regex_search', _version_regex) }}"
-    _package_holds: "{{ _package_versions | select('string') }}"
-  loop: "{{ _package_holds }}"
   when: ansible_os_family == "Debian"
-  changed_when: false
+  block:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+
+    - name: Set package hold facts
+      ansible.builtin.set_fact:
+        docker_apt_package_holds: "{{ _package_holds }}"
+      vars:
+        _version_regex: ".*=.*"
+        _package_versions: "{{ [docker_packages] | flatten | map('regex_search', _version_regex) }}"
+        _package_holds: "{{ _package_versions | select('string') }}"
+
+    - name: Configure apt package holds
+      ansible.builtin.dpkg_selections:
+        name: "{{ _package_name }}"
+        selection: "{{ _lock_state }}"
+      vars:
+        _package_name: "{{ item.split('=') | first  }}"
+      loop: "{{ docker_apt_package_holds }}"
+      when: _lock_state == hold or _package_name in ansible_facts.packages
+      changed_when: false
 
 - name: Configure yum package locks
   community.general.yum_versionlock:

@@ -13,23 +13,13 @@ all: install version lint test
 test: lint
 	poetry run molecule test -s ${MOLECULE_SCENARIO}
 
-poetry:
+install:
 	@type poetry >/dev/null || pip3 install poetry
 	@poetry install --no-root
 
-lint: poetry
+lint: install
 	poetry run yamllint .
 	poetry run ansible-lint .
-
-roles:
-	[ -f ${REQUIREMENTS} ] && yq '.$@[] | .name' -r < ${REQUIREMENTS} \
-		| xargs -L1 poetry run ansible-galaxy role install --force || exit 0
-
-collections:
-	[ -f ${REQUIREMENTS} ] && yq '.$@[]' -r < ${REQUIREMENTS} \
-		| xargs -L1 echo poetry run ansible-galaxy -vvv collection install --force || exit 0
-
-requirements: roles collections
 
 dependency create prepare converge idempotence side-effect verify destroy login reset:
 	MOLECULE_DOCKER_IMAGE=${MOLECULE_DOCKER_IMAGE} \
