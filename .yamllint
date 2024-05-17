@@ -2,6 +2,9 @@
 extends: default
 
 rules:
+  comments-indentation: false
+  comments:
+    min-spaces-from-content: 1
   braces:
     max-spaces-inside: 1
     level: error
@@ -10,3 +13,5 @@ rules:
     level: error
   line-length: disable
   truthy: disable
+  octal-values:
+    forbid-implicit-octal: false

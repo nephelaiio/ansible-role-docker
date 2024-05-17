@@ -6,5 +6,5 @@
     group: root
     owner: root
     mode: 0644
-  notify: docker_restart
+  notify: docker_restart  # noqa name[casing]
   when: docker_log_conf_manage

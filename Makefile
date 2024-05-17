@@ -1,4 +1,4 @@
-.PHONY: all ${MAKECMDGOALS}
+.PHONY: ${MAKECMDGOALS}
 
 MOLECULE_SCENARIO ?= install
 MOLECULE_DOCKER_IMAGE ?= ubuntu2004
@@ -13,11 +13,11 @@ all: install version lint test
 test: lint
 	poetry run molecule test -s ${MOLECULE_SCENARIO}
 
-install:
+poetry:
 	@type poetry >/dev/null || pip3 install poetry
 	@poetry install --no-root
 
-lint: install
+lint: poetry
 	poetry run yamllint .
 	poetry run ansible-lint .
 
