@@ -24,7 +24,7 @@
 - name: Install packages
   block:
     - name: Install yum packages
-      ansible.builtin.yum:
+      ansible.builtin.yum:  # noqa fqcn[action-core]
         name: "{{ docker_packages }}"
         state: "{{ docker_packages_state }}"
       when: ansible_os_family == "RedHat"
