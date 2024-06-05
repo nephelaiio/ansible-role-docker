@@ -27,7 +27,7 @@ docker_group_manage: true
 docker_user: "{{ lookup('env', 'USER') }}"
 docker_conf_file: /etc/docker/daemon.json
 docker_conf_manage: false
-docker_conf_proxy: []
+docker_conf_mirror: []
 docker_conf:
   log-driver: "json-file"
   log-opts:

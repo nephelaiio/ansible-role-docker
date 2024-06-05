@@ -7,4 +7,4 @@
     owner: root
     mode: 'u=rw,go=r'
   notify: docker_restart  # noqa name[casing]
-  when: docker_conf_proxy | bool
+  when: docker_conf_manage | bool
