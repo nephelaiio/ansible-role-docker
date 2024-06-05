@@ -27,3 +27,8 @@
       ansible.builtin.assert:
         that: docker service is running
       when: ansible_facts.services[docker_service].status != "enabled"
+
+    - name: Run sample Docker container
+      ansible.builtin.docker_container:
+        name: hello
+        image: hello-world
