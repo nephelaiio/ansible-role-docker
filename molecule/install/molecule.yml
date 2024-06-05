@@ -4,7 +4,7 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: docker-install
+  - name: docker-${MOLECULE_SCENARIO_NAME}
     image: geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}-ansible
     pre_build_image: true
     command: ${MOLECULE_DOCKER_COMMAND:-"/lib/systemd/systemd"}
@@ -15,7 +15,12 @@ platforms:
     tmpfs:
       - /tmp
       - /opt
+    groups:
+      - docker
 provisioner:
   name: ansible
+  playbooks:
+    converge: ../common/converge.yml
+    verify: ../common/verify.yml
 verifier:
   name: ansible

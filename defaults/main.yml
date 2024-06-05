@@ -25,9 +25,10 @@ docker_group: docker
 docker_user_manage: true
 docker_group_manage: true
 docker_user: "{{ lookup('env', 'USER') }}"
-docker_log_conf_manage: no
-docker_log_conf_file: /etc/docker/daemon.json
-docker_log_conf:
+docker_conf_file: /etc/docker/daemon.json
+docker_conf_manage: false
+docker_conf_mirror: []
+docker_conf:
   log-driver: "json-file"
   log-opts:
     max-size: "10m"

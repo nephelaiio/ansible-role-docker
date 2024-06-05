@@ -1,5 +1,5 @@
 ---
-- name: Perform local docker install
-  hosts: localhost
+- name: Perform local Docker install
+  hosts: docker
   roles:
     - nephelaiio.docker

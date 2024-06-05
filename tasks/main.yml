@@ -55,7 +55,7 @@
         state: directory
         group: root
         owner: root
-        mode: 0644
+        mode: 'u=rw,go=r'
       tags: install
 
     - name: Configure systemd service
@@ -69,13 +69,13 @@
             dest: "{{ docker_configuration_file }}"
             group: root
             owner: root
-            mode: 0644
+            mode: 'u=rw,go=r'
 
         - name: Include service tasks
           ansible.builtin.include_tasks: service.yml
 
-- name: Include logging tasks
-  ansible.builtin.include_tasks: logging.yml
+- name: Include configuration tasks
+  ansible.builtin.include_tasks: config.yml
 
 - name: Include user tasks
   ansible.builtin.include_tasks: users.yml

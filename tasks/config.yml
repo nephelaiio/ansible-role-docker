@@ -1,10 +1,10 @@
 ---
-- name: Configure logging
+- name: Configure Docker daemon
   ansible.builtin.copy:
     dest: "{{ docker_log_conf_file }}"
     content: "{{ docker_log_conf | to_nice_json(indent=2) }}"
     group: root
     owner: root
-    mode: 0644
+    mode: 'u=rw,go=r'
   notify: docker_restart  # noqa name[casing]
-  when: docker_log_conf_manage
+  when: docker_conf_manage | bool

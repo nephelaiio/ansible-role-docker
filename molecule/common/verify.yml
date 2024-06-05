@@ -1,13 +1,13 @@
 ---
 - name: Verify
-  hosts: all
+  hosts: docker
   vars:
     docker_service: docker.service
   pre_tasks:
-    - name: Verify docker cli is installed
+    - name: Verify Docker cli is installed
       ansible.builtin.command: "docker --version"
 
-    - name: Verify docker pip is installed
+    - name: Verify Docker pip is installed
       ansible.builtin.command: "python3 -c 'import docker'"
 
     - name: Gather service facts
@@ -27,3 +27,8 @@
       ansible.builtin.assert:
         that: docker service is running
       when: ansible_facts.services[docker_service].status != "enabled"
+
+    - name: Run sample Docker container
+      ansible.builtin.docker_container:
+        name: hello
+        image: hello-world

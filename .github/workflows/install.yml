@@ -32,8 +32,8 @@ jobs:
       - name: run local install
         run: ./install.sh --local
 
-      - name: test docker binary
+      - name: test Docker binary
         run: docker --version
 
-      - name: test docker permissions
+      - name: test Docker permissions
         run: docker ps
