@@ -1,0 +1,44 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: docker-${MOLECULE_SCENARIO_NAME}-daemon
+    image: geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}-ansible
+    pre_build_image: true
+    command: ${MOLECULE_DOCKER_COMMAND:-"/lib/systemd/systemd"}
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /opt
+    groups:
+      - docker
+  - name: docker-${MOLECULE_SCENARIO_NAME}-proxy
+    image: geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}-ansible
+    pre_build_image: true
+    command: ${MOLECULE_DOCKER_COMMAND:-"/lib/systemd/systemd"}
+    cgroupns_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    tmpfs:
+      - /tmp
+      - /opt
+    groups:
+      - mirror
+provisioner:
+  name: ansible
+  playbooks:
+    converge: ../common/converge.yml
+    verify: ../common/verify.yml
+  inventory:
+    hosts:
+      all:
+        vars:
+          docker_conf_mirrors: "{{ groups['mirror'] }}"
+verifier:
+  name: ansible

@@ -33,3 +33,4 @@ docker_conf:
   log-opts:
     max-size: "10m"
     max-file: '3'
+  registry-mirrors: "{{ docker_conf_mirrors }}"
