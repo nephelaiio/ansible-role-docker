@@ -59,7 +59,7 @@
       ansible.builtin.get_url:
         url: "{{ docker_rpm_repo.url }}"
         dest: /etc/yum.repos.d/docker.repo
-        mode: 0644
+        mode: 'u=rw,go=r'
       when: docker_repo_state != 'absent'
 
     - name: Remove yum repository

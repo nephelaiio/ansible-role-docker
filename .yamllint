@@ -14,4 +14,4 @@ rules:
   line-length: disable
   truthy: disable
   octal-values:
-    forbid-implicit-octal: false
+    forbid-implicit-octal: true

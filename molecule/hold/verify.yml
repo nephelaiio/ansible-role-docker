@@ -1,6 +1,6 @@
 ---
-- name: Verify docker packages
-  hosts: all
+- name: Verify Docker packages
+  hosts: docker
   become: true
   tasks:
     - name: Query Debian package versions

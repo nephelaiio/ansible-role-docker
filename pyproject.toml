@@ -8,7 +8,7 @@ authors = ["Ted Cook <teodoro.cook@gmail.com>"]
 python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
-ansible-lint = { version = "^24.5.0", markers = "platform_system != 'Windows'" }
+ansible-lint = { version = "^24.6.0", markers = "platform_system != 'Windows'" }
 ansible = "^9.5.1"
 molecule = "^24.2.1"
 molecule-plugins = "^23.5.3"

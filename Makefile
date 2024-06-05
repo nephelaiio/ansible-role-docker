@@ -13,11 +13,11 @@ all: install version lint test
 test: lint
 	poetry run molecule test -s ${MOLECULE_SCENARIO}
 
-poetry:
+install:
 	@type poetry >/dev/null || pip3 install poetry
 	@poetry install --no-root
 
-lint: poetry
+lint: install
 	poetry run yamllint .
 	poetry run ansible-lint .
 
