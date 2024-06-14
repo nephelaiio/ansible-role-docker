@@ -2,32 +2,14 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
+  name: default
 platforms:
   - name: docker-${MOLECULE_SCENARIO_NAME}-daemon
-    image: geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}-ansible
-    pre_build_image: true
-    command: ${MOLECULE_DOCKER_COMMAND:-"/lib/systemd/systemd"}
-    cgroupns_mode: host
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    privileged: true
-    tmpfs:
-      - /tmp
-      - /opt
+    image: "${MOLECULE_KVM_IMAGE}"
     groups:
       - docker
   - name: docker-${MOLECULE_SCENARIO_NAME}-proxy
-    image: geerlingguy/docker-${MOLECULE_DOCKER_IMAGE:-ubuntu2204}-ansible
-    pre_build_image: true
-    command: ${MOLECULE_DOCKER_COMMAND:-"/lib/systemd/systemd"}
-    cgroupns_mode: host
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    privileged: true
-    tmpfs:
-      - /tmp
-      - /opt
+    image: "${MOLECULE_KVM_IMAGE}"
     groups:
       - mirror
 provisioner:
@@ -39,6 +21,10 @@ provisioner:
     hosts:
       all:
         vars:
+          ansible_ssh_extra_args: "-o ControlPersist=no -o ControlPath=none"
+          libvirt_user: molecule
+          libvirt_address: '172.31.252.1/24'
+          libvirt_platforms: "{{ molecule_yml.platforms }}"
           docker_conf_mirrors: "{{ groups['mirror'] }}"
 verifier:
   name: ansible

@@ -21,7 +21,6 @@ jobs:
         scenario:
           - name: install
           - name: hold
-          - name: mirror
         image:
           - name: ubuntu2204
             command: /lib/systemd/systemd
