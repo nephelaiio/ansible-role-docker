@@ -15,9 +15,9 @@ test: lint
 
 poetry:
 	@type poetry >/dev/null || pip3 install poetry
-	@poetry install --no-root
 	@type nmcli || sudo apt-get install -y network-manager
 	@sudo apt-get install -y libvirt-dev
+	@poetry install --no-root
 
 lint: poetry
 	poetry run yamllint .
