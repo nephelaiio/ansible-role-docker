@@ -48,10 +48,9 @@
 - name: Configure service
   when: docker_packages_state != 'absent'
   block:
-
     - name: Configure service path
       ansible.builtin.file:
-        path: "{{ docker_configuration_path }}"
+        path: "{{ docker_service_confdir }}"
         state: directory
         group: root
         owner: root
@@ -62,11 +61,12 @@
       when: docker_service_manage
       tags: install
       block:
-
         - name: Configure service
-          ansible.builtin.template:
-            src: "{{ docker_configuration_template }}"
-            dest: "{{ docker_configuration_file }}"
+          ansible.builtin.copy:
+            dest: "{{ docker_service_confdir }}/mountflags.conf"
+            content: |
+              [Service]
+              MountFlags=shared
             group: root
             owner: root
             mode: 'u=rw,go=r'
@@ -74,8 +74,10 @@
         - name: Include service tasks
           ansible.builtin.include_tasks: service.yml
 
+
 - name: Include configuration tasks
   ansible.builtin.include_tasks: config.yml
+
 
 - name: Include user tasks
   ansible.builtin.include_tasks: users.yml

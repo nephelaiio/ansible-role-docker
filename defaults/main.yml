@@ -9,14 +9,12 @@ docker_rpm_repo:
 docker_repo_state: present
 docker_repo_manage: "{{ docker_packages_state != 'absent' }}"
 
+docker_packages_state: present
 docker_packages:
   - docker-ce
   - docker-ce-cli
 
-docker_packages_state: present
-docker_configuration_template: mountflags.conf.j2
-docker_configuration_file: /etc/systemd/system/docker.service.d/mountflags.conf
-docker_configuration_path: "{{ docker_configuration_file | dirname }}"
+docker_service_confdir: /etc/systemd/system/docker.service.d
 docker_service_name: docker
 docker_service_state: started
 docker_service_enabled: true
@@ -33,4 +31,4 @@ docker_conf:
   log-opts:
     max-size: "10m"
     max-file: '3'
-  registry-mirrors: "{{ docker_conf_mirrors }}"
+  registry-mirrors: "{{ docker_conf_mirrors }}"  # see https://docs.docker.com/docker-hub/mirror/#configure-the-docker-daemon
