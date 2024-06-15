@@ -60,7 +60,7 @@ else
     cp -a . "$tmpdir/nephelaiio.docker"
 fi
 pushd "$tmpdir/nephelaiio.docker"
-python3 -m pipx run poetry install
+python3 -m pipx run poetry install --without dev
 pushd "$tmpdir/nephelaiio.docker/install"
 python3 -m pipx run poetry run ansible-galaxy install --roles-path ../../ -r ../requirements.yml
 ANSIBLE_ROLES_PATH=../../ python3 -m pipx run poetry run ansible-playbook \

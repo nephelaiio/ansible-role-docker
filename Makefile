@@ -15,6 +15,8 @@ test: lint
 
 poetry:
 	@type poetry >/dev/null || pip3 install poetry
+	@type nmcli || sudo apt-get install -y network-manager
+	@sudo apt-get install -y libvirt-dev
 	@poetry install --no-root
 
 lint: poetry

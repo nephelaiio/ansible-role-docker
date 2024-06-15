@@ -1,4 +1,5 @@
 ---
 roles:
   - name: robertdebock.update
-collections: []
+collections:
+  - name: nephelaiio.libvirt
