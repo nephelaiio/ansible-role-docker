@@ -48,7 +48,6 @@
 - name: Configure service
   when: docker_packages_state != 'absent'
   block:
-
     - name: Configure service path
       ansible.builtin.file:
         path: "{{ docker_configuration_path }}"
@@ -62,7 +61,6 @@
       when: docker_service_manage
       tags: install
       block:
-
         - name: Configure service
           ansible.builtin.template:
             src: "{{ docker_configuration_template }}"

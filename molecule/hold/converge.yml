@@ -1,6 +1,6 @@
 ---
 - name: Deploy Docker packages
-  hosts: docker
+  hosts: all
   become: true
   roles:
     - nephelaiio.docker

@@ -1,13 +1,12 @@
 ---
 - name: Converge
-  hosts: docker
+  hosts: all
   roles:
     - nephelaiio.docker
   pre_tasks:
     - name: Update apt package cache
       ansible.builtin.apt:
         package: gpg-agent
-        update_cache: true
       when: ansible_os_family == 'Debian'
 
   post_tasks:

@@ -1,0 +1,27 @@
+---
+- name: Deploy Docker packages
+  hosts: all
+  become: true
+  tasks:
+    - name: Prepare Debian systems
+      when: ansible_os_family == 'Debian'
+      block:
+        - name: Update apt package cache
+          ansible.builtin.apt:
+            update_cache: true
+
+        - name: Install package helpers
+          ansible.builtin.apt:
+            package: gpg-agent
+            update_cache: true
+
+        - name: Install python3 binary redirection
+          ansible.builtin.apt:
+            name: python-is-python3
+
+    - name: Remove docker packages
+      ansible.builtin.include_role:
+        name: nephelaiio.docker
+      vars:
+        docker_packages_state: absent
+        docker_repo_manage: true
