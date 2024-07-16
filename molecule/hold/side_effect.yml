@@ -1,6 +1,6 @@
 ---
 - name: Update OS
-  hosts: docker
+  hosts: all
   become: true
   roles:
     - robertdebock.update

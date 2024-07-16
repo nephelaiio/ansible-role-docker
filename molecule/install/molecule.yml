@@ -15,11 +15,10 @@ platforms:
     tmpfs:
       - /tmp
       - /opt
-    groups:
-      - docker
 provisioner:
   name: ansible
   playbooks:
+    prepare: ../common/prepare.yml
     converge: ../common/converge.yml
     verify: ../common/verify.yml
 verifier:

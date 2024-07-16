@@ -1,6 +1,6 @@
 ---
 - name: Verify
-  hosts: docker
+  hosts: all
   vars:
     docker_service: docker.service
   pre_tasks:
