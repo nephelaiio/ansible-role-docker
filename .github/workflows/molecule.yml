@@ -1,17 +1,9 @@
 ---
 name: molecule
-
 on:
   pull_request:
     branches:
       - master
-  schedule:
-    - cron: "0 5 * * 5"
-
-defaults:
-  run:
-    working-directory: "nephelaiio.docker"
-
 jobs:
   molecule:
     name: molecule
@@ -19,9 +11,11 @@ jobs:
     strategy:
       matrix:
         scenario:
-          - name: install
-          - name: hold
+          - install
+          - hold
         image:
+          - name: ubuntu2404
+            command: /lib/systemd/systemd
           - name: ubuntu2204
             command: /lib/systemd/systemd
           - name: ubuntu2004
@@ -29,33 +23,11 @@ jobs:
           - name: debian11
             command: /lib/systemd/systemd
     steps:
-      - name: Check out the codebase
-        uses: actions/checkout@v4
+      - name: Run devbox tests
+        uses: pokerops/ansible-utils@master
         with:
-          path: "nephelaiio.docker"
-
-      - name: Set up python 3
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
-      - name: Update ubuntu repositories
-        run: sudo apt-get update
-
-      - name: Install make
-        run: sudo apt-get install -y make
-
-      - name: Install dependencies
-        run: make poetry
-
-      - name: Debug test environment
-        run: make debug
-
-      - name: Run molecule tests.
-        run: make test
-        env:
-          PY_COLORS: "1"
-          ANSIBLE_FORCE_COLOR: "1"
-          MOLECULE_DOCKER_IMAGE: ${{ matrix.image.name }}
-          MOLECULE_DOCKER_COMMAND: ${{ matrix.image.command }}
-          MOLECULE_SCENARIO: ${{ matrix.scenario.name }}
+          run: |
+            make requirements test \
+              MOLECULE_DOCKER_IMAGE: ${{ matrix.image.name }} \
+              MOLECULE_DOCKER_COMMAND: ${{ matrix.image.command }} \
+              MOLECULE_SCENARIO: ${{ matrix.scenario }}
