@@ -59,7 +59,7 @@ if [ -z "${LOCAL}" ]; then
 else
     cp -a . "$tmpdir/nephelaiio.docker"
 fi
-cd "$tmpdir/nephelaiio.docker/install"
+pushd "$tmpdir/nephelaiio.docker/install"
 ansible-galaxy install --roles-path ../../ -r ../requirements.yml
 ANSIBLE_ROLES_PATH=../../ ansible-playbook \
     --become \
