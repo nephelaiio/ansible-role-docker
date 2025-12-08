@@ -10,24 +10,10 @@ jobs:
     name: local install
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the codebase
-        uses: actions/checkout@v4
-        with:
-          path: "nephelaiio.docker"
-
-      - name: Set up python 3
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
-      - name: Install pipx
-        run: python3 -m pip install --user pipx
-
-      - name: Install pipx
-        run: python3 -m pipx ensurepath
-
       - name: Run local install
-        run: ./install.sh --local
+        uses: pokerops/ansible-utils@master
+        with:
+          run: ./install.sh --local
 
       - name: Test Docker binary
         run: docker --version

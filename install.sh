@@ -59,11 +59,9 @@ if [ -z "${LOCAL}" ]; then
 else
     cp -a . "$tmpdir/nephelaiio.docker"
 fi
-pushd "$tmpdir/nephelaiio.docker"
-python3 -m pipx run poetry install
-pushd "$tmpdir/nephelaiio.docker/install"
-python3 -m pipx run poetry run ansible-galaxy install --roles-path ../../ -r ../requirements.yml
-ANSIBLE_ROLES_PATH=../../ python3 -m pipx run poetry run ansible-playbook \
+cd "$tmpdir/nephelaiio.docker/install"
+ansible-galaxy install --roles-path ../../ -r ../requirements.yml
+ANSIBLE_ROLES_PATH=../../ ansible-playbook \
     --become \
     --connection=local \
     -i inventory playbook.yml \
