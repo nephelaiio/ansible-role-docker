@@ -5,7 +5,9 @@
   tasks:
     - name: Query Debian package versions
       ansible.builtin.shell:
-        cmd: "apt-cache madison {{ item }} | awk -F'|' '{ print $2 }'"
+        cmd: |
+          set -o pipefail
+          apt-cache madison {{ item }} | awk -F'|' '{ print $2 }'
       loop: "{{ docker_packages }}"
       register: _debian_package_query
       when: ansible_os_family == 'Debian'
@@ -18,6 +20,8 @@
       register: _redhat_package_query
       when: ansible_os_family == "RedHat"
       changed_when: false
+      tags:
+        - skip_ansible_lint
 
     - name: Set package version facts
       ansible.builtin.set_fact:
@@ -62,7 +66,7 @@
     - name: Gather package facts
       ansible.builtin.package_facts:
 
-    - name: Verify package versions
+    - name: Verify deb package versions
       ansible.builtin.assert:
         that:
           - _package in packages
@@ -78,7 +82,7 @@
       loop: "{{ docker_package_list }}"
       when: ansible_os_family == "Debian"
 
-    - name: Verify package versions
+    - name: Verify rpm package versions
       ansible.builtin.assert:
         that:
           - _package in packages

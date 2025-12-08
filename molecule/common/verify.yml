@@ -6,9 +6,11 @@
   pre_tasks:
     - name: Verify Docker cli is installed
       ansible.builtin.command: "docker --version"
+      changed_when: false
 
     - name: Verify Docker pip is installed
       ansible.builtin.command: "python3 -c 'import docker'"
+      changed_when: false
 
     - name: Gather service facts
       ansible.builtin.service_facts:
@@ -29,6 +31,6 @@
       when: ansible_facts.services[docker_service].status != "enabled"
 
     - name: Run sample Docker container
-      ansible.builtin.docker_container:
+      community.docker.docker_container:
         name: hello
         image: hello-world
