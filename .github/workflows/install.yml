@@ -15,8 +15,16 @@ jobs:
         with:
           run: ./install.sh --local
 
-      - name: Test Docker binary
-        run: docker --version
+      - name: Run local install
+        uses: pokerops/ansible-utils@master
+        with:
+          run: docker --version
+          checkout: false
+          install: false
 
-      - name: Test Docker permissions
-        run: docker ps
+      - name: Run local install
+        uses: pokerops/ansible-utils@master
+        with:
+          run: docker ps
+          checkout: false
+          install: false
