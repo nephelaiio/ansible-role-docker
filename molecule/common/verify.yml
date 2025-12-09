@@ -30,6 +30,24 @@
         that: docker service is running
       when: ansible_facts.services[docker_service].status != "enabled"
 
+    - name: Configure test storage driver
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "storage-driver": "vfs"
+          }
+        owner: root
+        group: root
+        mode: "u=rw,g=r,o=r"
+      become: true
+
+    - name: Restart docker service
+      ansible.builtin.service:
+        name: "{{ docker_service }}"
+        state: restarted
+      become: true
+
     - name: Run sample Docker container
       community.docker.docker_container:
         name: hello
