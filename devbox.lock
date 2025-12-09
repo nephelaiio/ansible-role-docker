@@ -1,54 +1,6 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "claude-code@latest": {
-      "last_modified": "2025-12-03T20:43:00Z",
-      "resolved": "github:NixOS/nixpkgs/ebc94f855ef25347c314258c10393a92794e7ab9#claude-code",
-      "source": "devbox-search",
-      "version": "2.0.57",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/j3gnr0821mcvd7wyyixbl7g63vlizinx-claude-code-2.0.57",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/j3gnr0821mcvd7wyyixbl7g63vlizinx-claude-code-2.0.57"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/ny2bh9rfr9zrbh48jgricl7p4rck4zya-claude-code-2.0.57",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/ny2bh9rfr9zrbh48jgricl7p4rck4zya-claude-code-2.0.57"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/ldfsjnvfhpbfch1rs7wfcvw3gvqc0xvv-claude-code-2.0.57",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/ldfsjnvfhpbfch1rs7wfcvw3gvqc0xvv-claude-code-2.0.57"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/27811lg7cs54m1nshaf9lj2nnpjvshc2-claude-code-2.0.57",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/27811lg7cs54m1nshaf9lj2nnpjvshc2-claude-code-2.0.57"
-        }
-      }
-    },
     "expect@latest": {
       "last_modified": "2025-11-23T21:50:36Z",
       "resolved": "github:NixOS/nixpkgs/ee09932cedcef15aaf476f9343d1dea2cb77e261#expect",
