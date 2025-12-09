@@ -2,9 +2,6 @@
 name: install
 on:
   pull_request:
-defaults:
-  run:
-    working-directory: "nephelaiio.docker"
 jobs:
   local:
     name: local install
