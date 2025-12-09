@@ -1,3 +1,5 @@
 ---
 roles:
   - robertdebock.update
+collections:
+  - community.general
