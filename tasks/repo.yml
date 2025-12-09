@@ -34,8 +34,8 @@
             repo: "{{ docker_deb_repo.url }}"
             state: "{{ docker_repo_state }}"
             filename: docker
-            validate_certs: no
-          notify: update_apt_cache  # noqa name[casing]
+            validate_certs: false
+          notify: update_apt_cache # noqa name[casing]
 
     - name: Configure yum repository
       when: ansible_os_family == "RedHat"
@@ -54,7 +54,7 @@
           ansible.builtin.get_url:
             url: "{{ docker_rpm_repo.url }}"
             dest: /etc/yum.repos.d/docker.repo
-            mode: 'u=rw,go=r'
+            mode: "u=rw,go=r"
           when: docker_repo_state != 'absent'
 
         - name: Remove yum repository

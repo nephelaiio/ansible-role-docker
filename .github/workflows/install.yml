@@ -1,39 +1,27 @@
 ---
 name: install
-
 on:
   pull_request:
-
-defaults:
-  run:
-    working-directory: 'nephelaiio.docker'
-
 jobs:
   local:
     name: local install
     runs-on: ubuntu-latest
     steps:
-      - name: check out the codebase
-        uses: actions/checkout@v4
+      - name: Run local install
+        uses: pokerops/ansible-utils@master
         with:
-          path: 'nephelaiio.docker'
+          run: ./install.sh --local
 
-      - name: set up python 3
-        uses: actions/setup-python@v5
+      - name: Run local install
+        uses: pokerops/ansible-utils@master
         with:
-          python-version: '3.x'
+          run: docker --version
+          checkout: false
+          install: false
 
-      - name: install pipx
-        run: python3 -m pip install --user pipx
-
-      - name: install pipx
-        run: python3 -m pipx ensurepath
-
-      - name: run local install
-        run: ./install.sh --local
-
-      - name: test Docker binary
-        run: docker --version
-
-      - name: test Docker permissions
-        run: docker ps
+      - name: Run local install
+        uses: pokerops/ansible-utils@master
+        with:
+          run: docker ps
+          checkout: false
+          install: false
