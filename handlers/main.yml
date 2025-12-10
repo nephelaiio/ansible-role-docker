@@ -4,9 +4,3 @@
     name: "{{ docker_service_name }}"
     state: restarted
   listen: docker_restart
-
-- name: Update apt package cache
-  ansible.builtin.apt:
-    update_cache: true
-  when: ansible_os_family == 'Debian'
-  listen: update_apt_cache
