@@ -35,7 +35,10 @@
             state: "{{ docker_repo_state }}"
             filename: docker
             validate_certs: false
-          notify: update_apt_cache # noqa name[casing]
+
+        - name: Update apt package cache
+          ansible.builtin.apt:
+            update_cache: true
 
     - name: Configure yum repository
       when: ansible_os_family == "RedHat"
@@ -62,6 +65,3 @@
             dest: /etc/yum.repos.d/docker.repo
             state: absent
           when: docker_repo_state == 'absent'
-
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
