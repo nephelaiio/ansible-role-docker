@@ -27,8 +27,8 @@
       ansible.builtin.set_fact:
         _docker_package_query: "{{ _redhat_packages + _debian_packages }}"
       vars:
-        _redhat_packages: "{{ [] if _redhat_package_query.skipped else _redhat_package_query.results }}"
-        _debian_packages: "{{ [] if _debian_package_query.skipped else _debian_package_query.results }}"
+        _redhat_packages: "{{ [] if _redhat_package_query.skipped else (_redhat_package_query.results | default([])) }}"
+        _debian_packages: "{{ [] if _debian_package_query.skipped else (_debian_package_query.results | default([])) }}"
 
     - name: Verify target package versions
       ansible.builtin.fail:

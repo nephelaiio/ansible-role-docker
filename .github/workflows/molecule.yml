@@ -15,7 +15,6 @@ jobs:
       matrix:
         runner:
           - resolute
-          - noble
         scenario:
           - install
           - hold
