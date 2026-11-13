@@ -3,30 +3,28 @@
   hosts: all
   become: true
   tasks:
-    - name: Query Debian package versions
+    - name: Query package versions
       ansible.builtin.shell:
-        cmd: apt-cache madison {{ item }} | awk -F'|' '{ print $2 }'
-      loop: "{{ docker_packages }}"
-      register: _debian_package_query
-      when: ansible_facts.os_family == 'Debian'
-      changed_when: false
-      tags: skip_ansible_lint
-
-    - name: Query RedHat package versions
-      ansible.builtin.shell:
-        cmd: "yum list {{ item }} --showduplicates | grep '^{{ item }}' | awk '{ print $1,$2 }' | sort -r"
-      loop: "{{ docker_packages }}"
-      register: _redhat_package_query
-      when: ansible_facts.os_family == "RedHat"
-      changed_when: false
-      tags: skip_ansible_lint
-
-    - name: Set package version facts
-      ansible.builtin.set_fact:
-        _docker_package_query: "{{ _redhat_packages + _debian_packages }}"
+        cmd: "{{ _query[ansible_facts.os_family] }}"
       vars:
-        _redhat_packages: "{{ [] if _redhat_package_query.skipped else _redhat_package_query.results }}"
-        _debian_packages: "{{ [] if _debian_package_query.skipped else _debian_package_query.results }}"
+        _query:
+          Debian: "apt-cache madison {{ item }} | awk -F'|' '{ print $2 }'"
+          RedHat: "yum list {{ item }} --showduplicates | grep '^{{ item }}' | awk '{ print $1,$2 }' | sort -r"
+      loop: "{{ docker_packages }}"
+      register: _package_query
+      changed_when: false
+      tags: skip_ansible_lint
+
+    - name: Verify target package versions
+      ansible.builtin.fail:
+        msg: "{{ _package }} has no installation candidate: {{ item }}"
+      vars:
+        _stdout: "{{ item.stdout_lines }}"
+        _package: "{{ item.item }}"
+      loop_control:
+        label: "{{ item.item }}"
+      loop: "{{ _package_query.results }}"
+      when: _stdout | length == 0
 
     - name: Initialize package versions
       ansible.builtin.set_fact:
@@ -34,7 +32,7 @@
 
     - name: Set target Debian package versions
       ansible.builtin.set_fact:
-        docker_package_list: "{{ docker_package_list + [_package] }}"
+        docker_package: "{{ docker_packages + [_package] }}"
       vars:
         _stdout: "{{ item.stdout_lines }}"
         _multiple: "{{ _stdout | length > 1 }}"
@@ -42,8 +40,24 @@
         _package: "{{ item.item }}={{ _version | trim }}"
       loop_control:
         label: "{{ item.item }}"
-      loop: "{{ _docker_package_query }}"
+      loop: "{{ _package_query.results }}"
       when: ansible_facts.os_family == "Debian"
+
+    - name: Set target RedHat package versions
+      ansible.builtin.set_fact:
+        docker_package_list: "{{ docker_packages + [_package] }}"
+      vars:
+        _stdout: "{{ item.stdout_lines }}"
+        _multiple: "{{ _stdout | length > 1 }}"
+        _target: "{{ (_stdout[0] if not _multiple else _stdout[1]).split(' ') }}"
+        _arch: "{{ _target[0].split('.')[1] }}"
+        _name: "{{ _target[0].split('.')[0] }}"
+        _version: "{{ _target[1] }}"
+        _package: "{{ _name }}-{{ _version }}.{{ _arch }}"
+      loop_control:
+        label: "{{ item.item }}"
+      loop: "{{ _package_query.results }}"
+      when: ansible_facts.os_family == "RedHat"
 
     - name: Set target RedHat package versions
       ansible.builtin.set_fact:
