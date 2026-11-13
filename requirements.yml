@@ -1,5 +1,5 @@
 ---
 roles:
-  - robertdebock.update
+  - nmae: robertdebock.update
 collections:
-  - community.general
+  - nmae: community.general
