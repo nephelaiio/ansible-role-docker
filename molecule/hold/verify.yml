@@ -8,7 +8,7 @@
         cmd: apt-cache madison {{ item }} | awk -F'|' '{ print $2 }'
       loop: "{{ docker_packages }}"
       register: _debian_package_query
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts.os_family == 'Debian'
       changed_when: false
       tags: skip_ansible_lint
 
@@ -17,7 +17,7 @@
         cmd: "yum list {{ item }} --showduplicates | grep '^{{ item }}' | awk '{ print $1,$2 }' | sort -r"
       loop: "{{ docker_packages }}"
       register: _redhat_package_query
-      when: ansible_os_family == "RedHat"
+      when: ansible_facts.os_family == "RedHat"
       changed_when: false
       tags: skip_ansible_lint
 
@@ -43,7 +43,7 @@
       loop_control:
         label: "{{ item.item }}"
       loop: "{{ _docker_package_query }}"
-      when: ansible_os_family == "Debian"
+      when: ansible_facts.os_family == "Debian"
 
     - name: Set target RedHat package versions
       ansible.builtin.set_fact:
@@ -59,7 +59,7 @@
       loop_control:
         label: "{{ item.item }}"
       loop: "{{ _docker_package_query }}"
-      when: ansible_os_family == "RedHat"
+      when: ansible_facts.os_family == "RedHat"
 
     - name: Gather package facts
       ansible.builtin.package_facts:
@@ -78,7 +78,7 @@
       loop_control:
         label: "{{ _package }}"
       loop: "{{ docker_package_list }}"
-      when: ansible_os_family == "Debian"
+      when: ansible_facts.os_family == "Debian"
 
     - name: Verify rpm package versions
       ansible.builtin.assert:
@@ -96,4 +96,4 @@
       loop_control:
         label: "{{ _package }}"
       loop: "{{ docker_packages | zip(docker_package_list) }}"
-      when: ansible_os_family == "RedHat"
+      when: ansible_facts.os_family == "RedHat"
