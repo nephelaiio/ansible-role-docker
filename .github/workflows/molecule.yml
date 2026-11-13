@@ -4,12 +4,18 @@ on:
   pull_request:
     branches:
       - master
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   molecule:
     name: molecule
-    runs-on: noble-32
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
+        runner:
+          - resolute
+          - noble
         scenario:
           - install
           - hold

@@ -1,4 +1,5 @@
 ---
 self-hosted-runner:
   labels:
-    - noble-32
+    - resolute
+    - noble
