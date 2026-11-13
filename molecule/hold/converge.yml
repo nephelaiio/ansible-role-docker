@@ -5,30 +5,17 @@
   roles:
     - nephelaiio.docker
   pre_tasks:
-    - name: Query Debian package versions
+    - name: Query package versions
       ansible.builtin.shell:
-        cmd: apt-cache madison {{ item }} | awk -F'|' '{ print $2 }'
-      loop: "{{ docker_packages }}"
-      register: _debian_package_query
-      when: ansible_facts.os_family == "Debian"
-      changed_when: false
-      tags: skip_ansible_lint
-
-    - name: Query RedHat package versions
-      ansible.builtin.shell:
-        cmd: "yum list {{ item }} --showduplicates | grep '^{{ item }}' | awk '{ print $1,$2 }' | sort -r"
-      loop: "{{ docker_packages }}"
-      register: _redhat_package_query
-      when: ansible_facts.os_family == "RedHat"
-      changed_when: false
-      tags: skip_ansible_lint
-
-    - name: Set package version facts
-      ansible.builtin.set_fact:
-        _docker_package_query: "{{ _redhat_packages + _debian_packages }}"
+        cmd: "{{ _query[ansible_facts.os_family] }}"
       vars:
-        _redhat_packages: "{{ [] if _redhat_package_query.skipped else (_redhat_package_query.results | default([])) }}"
-        _debian_packages: "{{ [] if _debian_package_query.skipped else (_debian_package_query.results | default([])) }}"
+        _query:
+          Debian: "apt-cache madison {{ item }} | awk -F'|' '{ print $2 }'"
+          RedHat: "yum list {{ item }} --showduplicates | grep '^{{ item }}' | awk '{ print $1,$2 }' | sort -r"
+      loop: "{{ docker_packages }}"
+      register: _package_query
+      changed_when: false
+      tags: skip_ansible_lint
 
     - name: Verify target package versions
       ansible.builtin.fail:
@@ -38,7 +25,7 @@
         _package: "{{ item.item }}"
       loop_control:
         label: "{{ item.item }}"
-      loop: "{{ _docker_package_query }}"
+      loop: "{{ _package_query.results }}"
       when: _stdout | length == 0
 
     - name: Initialize package versions
@@ -55,7 +42,7 @@
         _package: "{{ item.item }}={{ _version | trim }}"
       loop_control:
         label: "{{ item.item }}"
-      loop: "{{ _docker_package_query }}"
+      loop: "{{ _package_query.results }}"
       when: ansible_facts.os_family == "Debian"
 
     - name: Set target RedHat package versions
@@ -71,5 +58,5 @@
         _package: "{{ _name }}-{{ _version }}.{{ _arch }}"
       loop_control:
         label: "{{ item.item }}"
-      loop: "{{ _docker_package_query }}"
+      loop: "{{ _package_query.results }}"
       when: ansible_facts.os_family == "RedHat"
