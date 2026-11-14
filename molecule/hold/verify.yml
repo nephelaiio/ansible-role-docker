@@ -59,22 +59,6 @@
       loop: "{{ _package_query.results }}"
       when: ansible_facts.os_family == "RedHat"
 
-    - name: Set target RedHat package versions
-      ansible.builtin.set_fact:
-        docker_package_list: "{{ docker_package_list + [_package] }}"
-      vars:
-        _stdout: "{{ item.stdout_lines }}"
-        _multiple: "{{ _stdout | length > 1 }}"
-        _target: "{{ (_stdout[0] if not _multiple else _stdout[1]).split(' ') }}"
-        _arch: "{{ _target[0].split('.')[1] }}"
-        _name: "{{ _target[0].split('.')[0] }}"
-        _version: "{{ _target[1] }}"
-        _package: "{{ _name }}-{{ _version }}.{{ _arch }}"
-      loop_control:
-        label: "{{ item.item }}"
-      loop: "{{ _docker_package_query }}"
-      when: ansible_facts.os_family == "RedHat"
-
     - name: Gather package facts
       ansible.builtin.package_facts:
 
