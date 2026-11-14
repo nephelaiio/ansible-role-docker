@@ -4,7 +4,7 @@
   tags: install
   block:
     - name: Configure apt repository
-      when: ansible_os_family == "Debian"
+      when: ansible_facts.os_family == "Debian"
       block:
         - name: Install Debian package helpers
           ansible.builtin.apt:
@@ -12,36 +12,51 @@
               - apt-transport-https
               - ca-certificates
               - python3-docker
+              - python3-debian
               - python3-pip
               - curl
 
-        - name: Install apt key
-          ansible.builtin.apt_key:
-            keyserver: "{{ docker_deb_repo.keyserver }}"
-            state: present
-            id: "{{ docker_deb_repo.key }}"
-          ignore_errors: true
-          register: apt_key_module
+        - name: Remove legacy apt repository
+          ansible.builtin.file:
+            path: /etc/apt/sources.list.d/docker.list
+            state: absent
 
-        - name: Force install apt key
-          ansible.builtin.shell: |
-            curl -fsSL {{ docker_deb_repo.keyserver }} | sudo apt-key add -
-          when: apt_key_module.failed
-          tags: skip_ansible_lint
+        - name: Create apt keyring directory
+          ansible.builtin.file:
+            path: "{{ docker_deb_repo.key_path | dirname }}"
+            state: directory
+            mode: "u=rwx,go=rx"
+          when: docker_repo_state != 'absent'
+
+        - name: Install apt signing key
+          ansible.builtin.get_url:
+            url: "{{ docker_deb_repo.key_url }}"
+            dest: "{{ docker_deb_repo.key_path }}"
+            mode: "u=rw,go=r"
+          when: docker_repo_state != 'absent'
 
         - name: Manage apt repository
-          ansible.builtin.apt_repository:
-            repo: "{{ docker_deb_repo.url }}"
+          ansible.builtin.deb822_repository:
+            name: docker
+            types: deb
+            uris: "{{ docker_deb_repo.uris }}"
+            suites: "{{ docker_deb_repo.suites }}"
+            components: "{{ docker_deb_repo.components }}"
+            signed_by: "{{ docker_deb_repo.key_path }}"
             state: "{{ docker_repo_state }}"
-            filename: docker
-            validate_certs: false
+
+        - name: Remove apt signing key
+          ansible.builtin.file:
+            path: "{{ docker_deb_repo.key_path }}"
+            state: absent
+          when: docker_repo_state == 'absent'
 
         - name: Update apt package cache
           ansible.builtin.apt:
             update_cache: true
 
     - name: Configure yum repository
-      when: ansible_os_family == "RedHat"
+      when: ansible_facts.os_family == "RedHat"
       block:
         - name: Install epel repository
           ansible.builtin.package:
@@ -52,6 +67,7 @@
             name:
               - python3-pip
               - python3-docker
+              - python3-debian
 
         - name: Manage yum repository
           ansible.builtin.get_url:

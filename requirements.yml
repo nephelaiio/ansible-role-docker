@@ -1,5 +1,5 @@
 ---
 roles:
-  - robertdebock.update
+  - name: robertdebock.update
 collections:
-  - community.general
+  - name: community.general

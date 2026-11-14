@@ -4,27 +4,30 @@ on:
   pull_request:
     branches:
       - master
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   molecule:
     name: molecule
-    runs-on: libvirt
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
+        runner:
+          - resolute
         scenario:
           - install
           - hold
         image:
+          - https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64.img
           - https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
           - https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
-          - https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
           - https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2
-          - https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2
-          - https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2
     steps:
       - name: Run devbox tests
         uses: pokerops/ansible-utils@master
         with:
-          run: |
-            make requirements test \
-              MOLECULE_SCENARIO=${{ matrix.scenario }} \
-              MOLECULE_KVM_IMAGE=${{ matrix.image }}
+          run: just requirements test
+        env:
+          MOLECULE_SCENARIO: ${{ matrix.scenario }}
+          MOLECULE_KVM_IMAGE: ${{ matrix.image }}
